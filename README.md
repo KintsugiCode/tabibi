@@ -1,9 +1,12 @@
-tabibi
+# tabibi
 ==============================
 
-Audio source separation and tab notation.
+## Audio source separation and tab notation. 
 
-Project Organization
+One model is trained to separate the bass guitar audio track from a mixed audio track of a full band. The second model is then trained to take the first model's output and transcribe it into tab notation notes.
+
+
+### Project Organization
 ------------
 
     ├── LICENSE
