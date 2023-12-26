@@ -39,19 +39,13 @@ for foldername in os.listdir(f"{BASE_PATH}"):
 
                 spectogram_nparray = asarray(spectrogram)
 
-                # @@@@@@ TO-DO: Save Folders are created correctly and so are Save Files. The Save Files
-                # are however not yet properly being placed into their corresponsive Save Folders
-
-                print(f"@@@@ FOLDERNAME: {foldername}")
-
                 # Create folder structure to store processed data in for one track
                 os.mkdir(f"{BASE_SAVE_PATH}{foldername}/")
-                print(f"@@ SAVEPATH NAME: {BASE_SAVE_PATH}{foldername}/{filename}")
+
                 # Save output into file
                 savez_compressed(
                     f"{BASE_SAVE_PATH}{foldername}/{filename}", spectogram_nparray
                 )
-                print(f"@@ Spectogram:{spectogram_nparray}")
 
                 continue
             else:
