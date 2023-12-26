@@ -4,7 +4,9 @@ import librosa
 import librosa.display
 
 # file location
-file = "../src/data/raw/V1/AClassicEducation_NightOwl/AClassicEducation_NightOwl_MIX.wav"
+file = (
+    "../src/data/raw/V1/AClassicEducation_NightOwl/AClassicEducation_NightOwl_MIX.wav"
+)
 
 # use librosa to load audio file
 signal, sample_rate = librosa.load(file, sr=22050)
@@ -23,8 +25,8 @@ hop_length = 512  # in num. of samples
 n_fft = 2048  # window in num. of samples
 
 # calculate duration hop length and window in seconds
-hop_length_duration = float(hop_length)/sample_rate
-n_fft_duration = float(n_fft)/sample_rate
+hop_length_duration = float(hop_length) / sample_rate
+n_fft_duration = float(n_fft) / sample_rate
 
 print("STFT hop length duration is: {}s".format(hop_length_duration))
 print("STFT window duration is: {}s".format(n_fft_duration))
@@ -45,8 +47,7 @@ plt.title("Spectrogram")
 # apply logarithm to cast amplitude to Decibels
 log_spectrogram = librosa.amplitude_to_db(spectrogram)
 
-librosa.display.specshow(
-    log_spectrogram, sr=sample_rate, hop_length=hop_length)
+librosa.display.specshow(log_spectrogram, sr=sample_rate, hop_length=hop_length)
 plt.xlabel("Time")
 plt.ylabel("Frequency")
 plt.colorbar(format="%+2.0f dB")
