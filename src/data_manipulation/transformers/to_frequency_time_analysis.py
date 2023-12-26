@@ -14,22 +14,22 @@ for foldername in os.listdir(f"{BASE_PATH}"):
     try:
         for filename in os.listdir(f"{BASE_PATH}/{foldername}/"):
             if filename.endswith(".wav"):
-
-                print(filename)
+                print(f"@@ FILENAME: {filename}")
 
                 fileAmount += 1
 
                 # use librosa to load audio file
                 signal, sample_rate = librosa.load(
-                    f"{BASE_PATH}/{foldername}/{filename}", sr=22050)
+                    f"{BASE_PATH}/{foldername}/{filename}", sr=22050
+                )
 
                 # STFT -> spectrogram
                 hop_length = 512  # in num. of samples
                 n_fft = 2048  # window in num. of samples
 
                 # calculate duration hop length and window in seconds
-                hop_length_duration = float(hop_length)/sample_rate
-                n_fft_duration = float(n_fft)/sample_rate
+                hop_length_duration = float(hop_length) / sample_rate
+                n_fft_duration = float(n_fft) / sample_rate
 
                 # perform stft
                 stft = librosa.stft(signal, n_fft=n_fft, hop_length=hop_length)
@@ -42,12 +42,16 @@ for foldername in os.listdir(f"{BASE_PATH}"):
                 # @@@@@@ TO-DO: Save Folders are created correctly and so are Save Files. The Save Files
                 # are however not yet properly being placed into their corresponsive Save Folders
 
-                # Create folder structure to store processed data in for one track
-                save_path = os.mkdir(f"{BASE_SAVE_PATH}{foldername}")
+                print(f"@@@@ FOLDERNAME: {foldername}")
 
+                # Create folder structure to store processed data in for one track
+                os.mkdir(f"{BASE_SAVE_PATH}{foldername}/")
+                print(f"@@ SAVEPATH NAME: {BASE_SAVE_PATH}{foldername}/{filename}")
                 # Save output into file
-                savez_compressed(f"{save_path}{filename}", spectogram_nparray)
-                print(spectogram_nparray)
+                savez_compressed(
+                    f"{BASE_SAVE_PATH}{foldername}/{filename}", spectogram_nparray
+                )
+                print(f"@@ Spectogram:{spectogram_nparray}")
 
                 continue
             else:
