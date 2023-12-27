@@ -41,7 +41,6 @@ spectrogram = np.abs(stft)
 librosa.display.specshow(spectrogram, sr=sample_rate, hop_length=hop_length)
 plt.xlabel("Time")
 plt.ylabel("Frequency")
-
 plt.title("Spectrogram")
 
 # apply logarithm to cast amplitude to Decibels
