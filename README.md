@@ -59,4 +59,4 @@ One model is trained to separate the bass guitar audio track from a mixed audio 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
 
 
-<b>Many thanks to <a href="https://www.youtube.com/@LeoBassCovers2">Leo Bass Covers</a> for providing a large part of the training/testing audio data!</b>
+<b>Many thanks to <a href="https://www.youtube.com/@LeoBassCovers2">Leo Bass Covers</a> for providing a large part of the training/testing dataset!</b>
