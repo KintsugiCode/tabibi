@@ -5,6 +5,12 @@
 
 One model is trained to separate the bass guitar audio track from a mixed audio track of a full band. The second model is then trained to take the first model's output and transcribe it into tab notation notes.
 
+---
+
+<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>.
+
+
+<b>Many thanks to <a href="https://www.youtube.com/@LeoBassCovers2">Leo Bass Covers</a> for providing a large part of the training/testing dataset!</b>
 
 ### Project Organization
 ------------
@@ -54,7 +60,5 @@ One model is trained to separate the bass guitar audio track from a mixed audio 
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
 
+------------
 
---------
-
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
