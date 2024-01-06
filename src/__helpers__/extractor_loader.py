@@ -1,5 +1,6 @@
 import numpy as np
 from numpy.lib.npyio import NpzFile
+import os
 
 
 def extract_numpy_data(file_path):
@@ -25,3 +26,11 @@ def extract_numpy_data(file_path):
         raise Exception("The transformed data saved has to be in a format of numpy array or dict of arrays")
 
     return extracted_data
+
+
+def get_one_file_with_extension(directory_path, extension):
+    for root, _, files in os.walk(directory_path):
+        for file in files:
+            if file.endswith(extension):
+                return file
+    return None

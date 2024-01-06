@@ -1,4 +1,7 @@
 
-numpy==1.26.2
+numpy==1.26.3
 scipy==1.11.4
 
+
+librosa~=0.10.1
+setuptools==69.0.3

@@ -5,52 +5,59 @@ from numpy import savez_compressed
 from numpy import asarray
 
 
-BASE_PATH = "../src/data/raw/V1/"
-BASE_SAVE_PATH = "../src/data/processed/train/"
+from src.__helpers__.extractor_loader import get_one_file_with_extension
+from src.frequency_converter.frequency_time_analysis import audio_to_freq_time_analysis
 
-fileAmount = 0
+BASE_PATH = "/Volumes/NO NAME/Linux Laptop Backup/Documents/Code_University/Capstone Project/tabibi/src/data/raw/v1"
+BASE_SAVE_PATH = "../src/data/processed/train"
+
+train_dict = {
+            "x_train": list(),
+            "y_train": list()
+        }
+
+data_point_amount = 0
 
 for foldername in os.listdir(f"{BASE_PATH}"):
-    try:
-        for filename in os.listdir(f"{BASE_PATH}/{foldername}/"):
-            if filename.endswith(".wav"):
-                print(f"@@ FILENAME: {filename}")
+    for mix_file_name in os.listdir(f"{BASE_PATH}/{foldername}/"):
+        if mix_file_name.endswith(".wav"):
+            print(f"@@ data_point: {mix_file_name}")
 
-                fileAmount += 1
+            data_point_amount += 1
 
-                # use librosa to load audio file
-                signal, sample_rate = librosa.load(
-                    f"{BASE_PATH}/{foldername}/{filename}", sr=22050
-                )
+            mix_folder_path = f"{BASE_PATH}/{foldername}"
+            mix_file_path = f"{mix_folder_path}/{mix_file_name}"
 
-                # STFT -> spectrogram
-                hop_length = 512  # in num. of samples
-                n_fft = 2048  # window in num. of samples
+            print(mix_file_name)
 
-                # calculate duration hop length and window in seconds
-                hop_length_duration = float(hop_length) / sample_rate
-                n_fft_duration = float(n_fft) / sample_rate
 
-                # perform stft
-                stft = librosa.stft(signal, n_fft=n_fft, hop_length=hop_length)
-
-                # calculate abs values on complex numbers to get magnitude
-                spectrogram = np.abs(stft)
-
-                spectogram_nparray = asarray(spectrogram)
-
-                # Create folder structure to store processed data in for one track
-                os.mkdir(f"{BASE_SAVE_PATH}{foldername}/")
-
-                # Save output into file
-                savez_compressed(
-                    f"{BASE_SAVE_PATH}{foldername}/{filename}", spectogram_nparray
-                )
-
+            bass_folder_path = f"{mix_folder_path}/Bass"
+            bass_file_name = get_one_file_with_extension(directory_path=bass_folder_path,
+                                                         extension="wav")
+            print(bass_file_name)
+            print()
+            if bass_file_name is None:
                 continue
-            else:
-                continue
-    except Exception:
-        continue
+            bass_file_path = f"{bass_folder_path}/{bass_file_name}"
 
-print(f"@@@@@@@@@@ Processed wav files: {fileAmount}")
+            mix_spectrogram = audio_to_freq_time_analysis(file_path=mix_file_path)
+            bass_spectrogram = audio_to_freq_time_analysis(file_path=bass_file_path)
+            train_dict["x_train"].append(mix_spectrogram)
+            train_dict["y_train"].append(bass_spectrogram)
+
+            # spectogram_nparray = asarray(mix_spectrogram)
+
+            # Create folder structure to store processed data in for one track
+            # os.mkdir(f"{BASE_SAVE_PATH}{foldername}/")
+
+            # Save output into file
+            #savez_compressed(
+             #   f"{BASE_SAVE_PATH}{foldername}/{mix_file_name}", spectogram_nparray
+            #)
+            if data_point_amount == 10:
+                break
+
+
+
+print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
+print(train_dict)

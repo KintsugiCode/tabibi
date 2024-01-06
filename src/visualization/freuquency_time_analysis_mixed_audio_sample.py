@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import librosa
 import librosa.display
 
+# figure how to make the same plot from a scipy file
+
 # file location
 file = "../data/raw/V1/AClassicEducation_NightOwl/AClassicEducation_NightOwl_MIX.wav"
 
