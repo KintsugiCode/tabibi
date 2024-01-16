@@ -4,19 +4,13 @@ import librosa
 from numpy import savez_compressed
 from numpy import asarray
 
-from src.__helpers__.__utils__ import get_one_file_with_extension, save_numpy_data, load_numpy_data
+from src.__helpers__.__utils__ import (
+    convert_dict_key_to_numpy_arrays,
+    convert_to_recarray,
+    get_one_file_with_extension,
+    save_numpy_data,
+)
 from src.frequency_converter.frequency_time_analysis import audio_to_freq_time_analysis
-
-
-def convert_dict_key_to_numpy_arrays(dictionary, keys):
-    for key in keys:
-        dictionary[key] = np.array(dictionary[key])
-
-    return dictionary
-
-
-def convert_to_recarray(data_dict):
-    return np.rec.array([(k, v) for k, v in data_dict.items()], dtype=[('key', object), ('value', object)])
 
 
 BASE_PATH = "../../data/raw/V1"
@@ -26,11 +20,7 @@ TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz"
 
 
 def transform_mix_and_bass_to_spectrogram():
-    train_dict = {
-        "x_train": list(),
-        "y_train": list(),
-        "mix_name": list()
-    }
+    train_dict = {"x_train": list(), "y_train": list(), "mix_name": list()}
 
     data_point_amount = 0
     for foldername in os.listdir(f"{BASE_PATH}"):
@@ -46,8 +36,9 @@ def transform_mix_and_bass_to_spectrogram():
                 print(mix_file_name)
 
                 bass_folder_path = f"{mix_folder_path}/Bass"
-                bass_file_name = get_one_file_with_extension(directory_path=bass_folder_path,
-                                                             extension="wav")
+                bass_file_name = get_one_file_with_extension(
+                    directory_path=bass_folder_path, extension="wav"
+                )
                 print(bass_file_name)
                 print()
                 if bass_file_name is None:
@@ -63,8 +54,9 @@ def transform_mix_and_bass_to_spectrogram():
 
     # Save output into file
 
-    train_dict = convert_dict_key_to_numpy_arrays(dictionary=train_dict,
-                                                  keys=["x_train", "y_train"])
+    train_dict = convert_dict_key_to_numpy_arrays(
+        dictionary=train_dict, keys=["x_train", "y_train"]
+    )
     train_dict_recarray = convert_to_recarray(data_dict=train_dict)
 
     save_numpy_data(file_path=TRAIN_FILE_PATH, data=train_dict_recarray)
@@ -73,5 +65,3 @@ def transform_mix_and_bass_to_spectrogram():
 
 
 transform_mix_and_bass_to_spectrogram()
-extracted_data = load_numpy_data(file_path=TRAIN_FILE_PATH)
-print(extracted_data)
