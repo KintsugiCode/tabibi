@@ -39,6 +39,8 @@ for foldername in os.listdir(f"{BASE_PATH}"):
 
                 spectogram_nparray = asarray(spectrogram)
 
+                print(spectogram_nparray)
+
                 # Create folder structure to store processed data in for one track
                 os.mkdir(f"{BASE_SAVE_PATH}{foldername}/")
 
