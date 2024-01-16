@@ -4,17 +4,16 @@ import librosa
 from numpy import savez_compressed
 from numpy import asarray
 
-
 from src.__helpers__.extractor_loader import get_one_file_with_extension
 from src.frequency_converter.frequency_time_analysis import audio_to_freq_time_analysis
 
-BASE_PATH = "/Volumes/NO NAME/Linux Laptop Backup/Documents/Code_University/Capstone Project/tabibi/src/data/raw/v1"
-BASE_SAVE_PATH = "../src/data/processed/train"
+BASE_PATH = "../../data/raw/V1"
+BASE_SAVE_PATH = "../../data/processed/train"
 
 train_dict = {
-            "x_train": list(),
-            "y_train": list()
-        }
+    "x_train": list(),
+    "y_train": list()
+}
 
 data_point_amount = 0
 
@@ -29,7 +28,6 @@ for foldername in os.listdir(f"{BASE_PATH}"):
             mix_file_path = f"{mix_folder_path}/{mix_file_name}"
 
             print(mix_file_name)
-
 
             bass_folder_path = f"{mix_folder_path}/Bass"
             bass_file_name = get_one_file_with_extension(directory_path=bass_folder_path,
@@ -51,13 +49,11 @@ for foldername in os.listdir(f"{BASE_PATH}"):
             # os.mkdir(f"{BASE_SAVE_PATH}{foldername}/")
 
             # Save output into file
-            #savez_compressed(
-             #   f"{BASE_SAVE_PATH}{foldername}/{mix_file_name}", spectogram_nparray
-            #)
+            # savez_compressed(
+            #   f"{BASE_SAVE_PATH}{foldername}/{mix_file_name}", spectogram_nparray
+            # )
             if data_point_amount == 10:
                 break
-
-
 
 print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
 print(train_dict)
