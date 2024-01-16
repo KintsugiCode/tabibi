@@ -4,56 +4,74 @@ import librosa
 from numpy import savez_compressed
 from numpy import asarray
 
-from src.__helpers__.extractor_loader import get_one_file_with_extension
+from src.__helpers__.__utils__ import get_one_file_with_extension, save_numpy_data, load_numpy_data
 from src.frequency_converter.frequency_time_analysis import audio_to_freq_time_analysis
 
+
+def convert_dict_key_to_numpy_arrays(dictionary, keys):
+    for key in keys:
+        dictionary[key] = np.array(dictionary[key])
+
+    return dictionary
+
+
+def convert_to_recarray(data_dict):
+    return np.rec.array([(k, v) for k, v in data_dict.items()], dtype=[('key', object), ('value', object)])
+
+
 BASE_PATH = "../../data/raw/V1"
-BASE_SAVE_PATH = "../../data/processed/train"
+TRAIN_FOLDER_PATH = "../../data/processed/train"
+TRAIN_FILE_NAME = "mix_bass_train_data"
+TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz"
 
-train_dict = {
-    "x_train": list(),
-    "y_train": list()
-}
 
-data_point_amount = 0
+def transform_mix_and_bass_to_spectrogram():
+    train_dict = {
+        "x_train": list(),
+        "y_train": list(),
+        "mix_name": list()
+    }
 
-for foldername in os.listdir(f"{BASE_PATH}"):
-    for mix_file_name in os.listdir(f"{BASE_PATH}/{foldername}/"):
-        if mix_file_name.endswith(".wav"):
-            print(f"@@ data_point: {mix_file_name}")
+    data_point_amount = 0
+    for foldername in os.listdir(f"{BASE_PATH}"):
+        for mix_file_name in os.listdir(f"{BASE_PATH}/{foldername}/"):
+            if mix_file_name.endswith(".wav"):
+                print(f"@@ data_point: {mix_file_name}")
 
-            data_point_amount += 1
+                data_point_amount += 1
 
-            mix_folder_path = f"{BASE_PATH}/{foldername}"
-            mix_file_path = f"{mix_folder_path}/{mix_file_name}"
+                mix_folder_path = f"{BASE_PATH}/{foldername}"
+                mix_file_path = f"{mix_folder_path}/{mix_file_name}"
 
-            print(mix_file_name)
+                print(mix_file_name)
 
-            bass_folder_path = f"{mix_folder_path}/Bass"
-            bass_file_name = get_one_file_with_extension(directory_path=bass_folder_path,
-                                                         extension="wav")
-            print(bass_file_name)
-            print()
-            if bass_file_name is None:
-                continue
-            bass_file_path = f"{bass_folder_path}/{bass_file_name}"
+                bass_folder_path = f"{mix_folder_path}/Bass"
+                bass_file_name = get_one_file_with_extension(directory_path=bass_folder_path,
+                                                             extension="wav")
+                print(bass_file_name)
+                print()
+                if bass_file_name is None:
+                    continue
+                bass_file_path = f"{bass_folder_path}/{bass_file_name}"
 
-            mix_spectrogram = audio_to_freq_time_analysis(file_path=mix_file_path)
-            bass_spectrogram = audio_to_freq_time_analysis(file_path=bass_file_path)
-            train_dict["x_train"].append(mix_spectrogram)
-            train_dict["y_train"].append(bass_spectrogram)
+                mix_spectrogram = audio_to_freq_time_analysis(file_path=mix_file_path)
+                bass_spectrogram = audio_to_freq_time_analysis(file_path=bass_file_path)
 
-            # spectogram_nparray = asarray(mix_spectrogram)
+                train_dict["x_train"].append(mix_spectrogram)
+                train_dict["y_train"].append(bass_spectrogram)
+                train_dict["mix_name"].append(mix_file_name)
 
-            # Create folder structure to store processed data in for one track
-            # os.mkdir(f"{BASE_SAVE_PATH}{foldername}/")
+    # Save output into file
 
-            # Save output into file
-            # savez_compressed(
-            #   f"{BASE_SAVE_PATH}{foldername}/{mix_file_name}", spectogram_nparray
-            # )
-            if data_point_amount == 10:
-                break
+    train_dict = convert_dict_key_to_numpy_arrays(dictionary=train_dict,
+                                                  keys=["x_train", "y_train"])
+    train_dict_recarray = convert_to_recarray(data_dict=train_dict)
 
-print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
-print(train_dict)
+    save_numpy_data(file_path=TRAIN_FILE_PATH, data=train_dict_recarray)
+
+    print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
+
+
+transform_mix_and_bass_to_spectrogram()
+extracted_data = load_numpy_data(file_path=TRAIN_FILE_PATH)
+print(extracted_data)

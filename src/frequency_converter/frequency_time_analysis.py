@@ -14,7 +14,7 @@ def audio_to_freq_time_analysis(file_path):
     n_fft = 2048  # window in num. of samples
 
     # perform stft
-    stft = librosa.stft(signal, window=n_fft, hop_length=hop_length)
+    stft = librosa.stft(signal, n_fft=n_fft, hop_length=hop_length)
 
     # calculate abs values on complex numbers to get magnitude
     spectrogram = np.abs(stft)
