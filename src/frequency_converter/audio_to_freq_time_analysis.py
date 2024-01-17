@@ -6,7 +6,7 @@ def audio_to_freq_time_analysis(file_path):
     # use librosa to load audio file
 
     signal, sample_rate = librosa.load(
-        file_path, sr=22050
+        file_path, sr=22050, mono=True
     )
 
     # STFT -> spectrogram
