@@ -6,11 +6,9 @@ import numpy as np
 from src.__helpers__.__utils__ import (
     convert_dict_key_to_numpy_arrays,
     convert_to_recarray,
-    get_one_file_with_extension,
-    save_numpy_data,
+    get_one_file_with_extension, savez_numpy_data
 )
 from src.frequency_converter.audio_to_freq_time_analysis import audio_to_freq_time_analysis
-
 
 BASE_PATH = "../../data/raw/V1"
 TRAIN_FOLDER_PATH = "../../data/processed/train"
@@ -26,7 +24,7 @@ def transform_mix_and_bass_to_spectrogram():
     data_point_amount = 0
     for foldername in os.listdir(f"{BASE_PATH}"):
         for mix_file_name in os.listdir(f"{BASE_PATH}/{foldername}/"):
-            if mix_file_name.endswith(".wav") :
+            if mix_file_name.endswith(".wav"):
                 print(f"@@ data_point: {mix_file_name}")
 
                 data_point_amount += 1
@@ -43,10 +41,13 @@ def transform_mix_and_bass_to_spectrogram():
                 print(bass_file_name)
                 print()
 
+                '''
+                # Uncomment if a pause is needed to prevent computer hardware becoming overwhelmed
                 if data_point_amount == (data_point_multitude * 30):
                     print("Waiting for 30 seconds")
                     data_point_multitude += 1
                     time.sleep(30)
+                '''
 
                 if bass_file_name is None:
                     continue
@@ -61,10 +62,14 @@ def transform_mix_and_bass_to_spectrogram():
 
                 dim_for_padding.append(mix_spectrogram.shape[1])
 
+                # delete variables after use to free up memory
+                del mix_spectrogram
+                del bass_spectrogram
+                del mix_file_name
 
     # Pad the x_train and y_train lists so that they all have the same dimensions
     max_dimension = max(dim_for_padding)
-    train_dict["x_train"]=[np.pad(arr, ((0,0), (0, max_dimension - arr.shape[1]))) for arr in train_dict['x_train']]
+    train_dict["x_train"] = [np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1]))) for arr in train_dict['x_train']]
     train_dict["y_train"] = [np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1]))) for arr in train_dict['y_train']]
 
     # Save output into file
@@ -73,7 +78,7 @@ def transform_mix_and_bass_to_spectrogram():
     )
     train_dict_recarray = convert_to_recarray(data_dict=train_dict)
 
-    save_numpy_data(file_path=TRAIN_FILE_PATH, data=train_dict_recarray)
+    savez_numpy_data(file_path=TRAIN_FILE_PATH, data= train_dict_recarray)
 
     print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
 
