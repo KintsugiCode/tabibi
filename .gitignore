@@ -55,6 +55,7 @@ coverage.xml
 # Mac OS-specific storage files
 .DS_Store
 .idea
+__pycache__
 
 # vim
 *.swp
