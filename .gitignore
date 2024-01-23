@@ -2,7 +2,7 @@
 # Datasets
 
 src/data/*
-src/transformers/__tests__/test_data/AClassicEducation_NightOwl
+src/transformers/__tests__/test_data/*
 
 # Distribution / packaging
 .Python
