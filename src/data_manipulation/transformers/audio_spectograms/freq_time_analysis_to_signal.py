@@ -1,21 +1,4 @@
-import os
-import time
-
-import numpy as np
-
-from src.__helpers__.__utils__ import (
-    convert_dict_key_to_numpy_arrays,
-    convert_to_recarray,
-    get_one_file_with_extension,
-    savez_numpy_data,
-)
-from src.data_manipulation.transformers.normalization.train_mix_bass_data_normalizer import (
-    Normalizer,
-)
-from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
-
-
-def transform_mix_and_bass_to_spectrogram(base_path, train_file_path):
+def transform_spectogram_to_audio():
     train_dict = {"x_train": list(), "y_train": list(), "mix_name": list()}
     dim_for_padding = []
     data_point_multitude = 1

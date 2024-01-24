@@ -3,8 +3,10 @@ import torch.nn as nn
 import json
 
 
-with open('../../../config/hyperparameters_audio.json') as hyperparameters_file:
+with open("../../../config/hyperparameters_audio.json") as hyperparameters_file:
     hyperparameters = json.load(hyperparameters_file)
+
+
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_dim, n_layers, output_size):
         super(RNN, self).__init__()
@@ -26,7 +28,7 @@ class RNN(nn.Module):
     def forward(self, x):
         # x = tensor of shape (batch_size, seq_length, input_size)
 
-        batch_size = hyperparameters['batch_size']
+        batch_size = hyperparameters["batch_size"]
 
         # Initialize hidden state for first input
         hidden_i = self.init_hidden(batch_size)
