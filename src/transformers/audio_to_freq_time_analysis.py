@@ -5,9 +5,7 @@ import numpy as np
 def audio_to_freq_time_analysis(file_path):
     try:
         # use librosa to load audio file
-        signal, sample_rate = librosa.load(
-            file_path, sr=22050, mono=True
-        )
+        signal, sample_rate = librosa.load(file_path, sr=22050, mono=True)
 
         # STFT -> spectrogram
         hop_length = 512  # in num. of samples
