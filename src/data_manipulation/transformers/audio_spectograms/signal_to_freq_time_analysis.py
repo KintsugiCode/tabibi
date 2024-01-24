@@ -8,7 +8,9 @@ from src.__helpers__.__utils__ import (
     convert_to_recarray,
     get_one_file_with_extension, savez_numpy_data
 )
+from src.data_manipulation.transformers.normalization.train_mix_bass_data_normalizer import Normalizer
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
+
 
 def transform_mix_and_bass_to_spectrogram(base_path, train_file_path):
     train_dict = {"x_train": list(), "y_train": list(), "mix_name": list()}
@@ -72,9 +74,14 @@ def transform_mix_and_bass_to_spectrogram(base_path, train_file_path):
     )
     train_dict_recarray = convert_to_recarray(data_dict=train_dict)
 
-    savez_numpy_data(file_path=train_file_path, data= train_dict_recarray)
+    # Save un-normalized data
+    savez_numpy_data(file_path=train_file_path, data=train_dict_recarray)
 
     print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
 
+    # Normalize the data
+    train_dict["x_train"] = Normalizer(train_dict["x_train"]).normalize()
+    train_dict["y_train"] = Normalizer(train_dict["y_train"]).normalize()
 
-
+    # Save normalized data
+    savez_numpy_data(file_path=f"{train_file_path}_normalized", data=train_dict_recarray)
