@@ -81,8 +81,8 @@ def transform_mix_and_bass_to_spectrogram():
     train_dict_recarray = convert_to_recarray(data_dict=train_dict)
 
     # Save un-normalized data
-    savez_numpy_data(file_path=TRAIN_FILE_PATH, data= train_dict_recarray)
-
+    savez_numpy_data(file_path=TRAIN_FILE_PATH, data=train_dict_recarray)
+    
     print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
 
     # Normalize the data
