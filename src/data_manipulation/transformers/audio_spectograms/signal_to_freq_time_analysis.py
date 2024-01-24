@@ -10,26 +10,20 @@ from src.__helpers__.__utils__ import (
 )
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
 
-BASE_PATH = "../../../data/raw/V1"
-TRAIN_FOLDER_PATH = "../../../data/processed/train"
-TRAIN_FILE_NAME = "mix_bass_train_data"
-TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz"
-
-
-def transform_mix_and_bass_to_spectrogram():
+def transform_mix_and_bass_to_spectrogram(base_path, train_file_path):
     train_dict = {"x_train": list(), "y_train": list(), "mix_name": list()}
     dim_for_padding = []
     data_point_multitude = 1
 
     data_point_amount = 0
-    for foldername in os.listdir(f"{BASE_PATH}"):
-        for mix_file_name in os.listdir(f"{BASE_PATH}/{foldername}/"):
+    for foldername in os.listdir(f"{base_path}"):
+        for mix_file_name in os.listdir(f"{base_path}/{foldername}/"):
             if mix_file_name.endswith(".wav"):
                 print(f"@@ data_point: {mix_file_name}")
 
                 data_point_amount += 1
 
-                mix_folder_path = f"{BASE_PATH}/{foldername}"
+                mix_folder_path = f"{base_path}/{foldername}"
                 mix_file_path = f"{mix_folder_path}/{mix_file_name}"
 
                 print(mix_file_name)
@@ -78,9 +72,9 @@ def transform_mix_and_bass_to_spectrogram():
     )
     train_dict_recarray = convert_to_recarray(data_dict=train_dict)
 
-    savez_numpy_data(file_path=TRAIN_FILE_PATH, data= train_dict_recarray)
+    savez_numpy_data(file_path=train_file_path, data= train_dict_recarray)
 
     print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
 
 
-transform_mix_and_bass_to_spectrogram()
+
