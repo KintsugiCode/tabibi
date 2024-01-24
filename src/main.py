@@ -1,28 +1,25 @@
+import torch
+import torch.nn as nn
 import json
-import numpy as np
-from sklearn.decomposition import NMF
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-from scipy.io import wavfile
-import librosa
 
-with open("src/config/hyperparameters.json", "r") as f:
+from src.data_manipulation.transformers.audio_spectograms.signal_to_freq_time_analysis import \
+    transform_mix_and_bass_to_spectrogram
+
+with open("./config/hyperparameters_audio.json", "r") as f:
     hyperparameters = json.load(f)
+
+# relative paths to dataset as seen from this main.py file
+BASE_PATH = "./data/raw/V1"
+TRAIN_FOLDER_PATH = "./data/processed/train"
+TRAIN_FILE_NAME = "mix_bass_train_data"
+TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz"
 
 
 def main():
-    # call data transformer with audio filepath
-
-    # call the rnn-model with the prepared data
-        # model = RNN(input_size=dict_size, output_size=dict_size, hidden_dim=hyperparameters['hidden_dim'], n_layers=hyperparameters['n_layers'])
-
-    # visualize the evaluation metrics that the model returns
+    transform_mix_and_bass_to_spectrogram(base_path=BASE_PATH, train_file_path=TRAIN_FILE_PATH)
 
 
 if __name__ == "__main__":
     main()
 
-
-
-
-
+# model = RNN(input_size=dict_size, output_size=dict_size, hidden_dim=hyperparameters['hidden_dim'], n_layers=hyperparameters['n_layers'])
