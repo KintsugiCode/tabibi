@@ -3,10 +3,6 @@ import torch.nn as nn
 import json
 
 
-with open("../../../config/hyperparameters_audio.json") as hyperparameters_file:
-    hyperparameters = json.load(hyperparameters_file)
-
-
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_dim, n_layers, output_size):
         super(RNN, self).__init__()
@@ -26,19 +22,30 @@ class RNN(nn.Module):
         self.fc = nn.Linear(hidden_dim, output_size)
 
     def forward(self, x):
-        # x = tensor of shape (batch_size, seq_length, input_size)
+        """
+        `x` is the batch of sequences that you want your RNN to process.
 
-        batch_size = hyperparameters["batch_size"]
+        `x` has a shape of `(batch_size, seq_length, num_features)`:
+            - `batch_size` is the number of sequences you process at a time.
+            - `seq_length` is the length of each sequence.
+            - `num_features` is the number of input features at each sequence element.
+        """
+        batch_size = x.size(0)
 
         # Initialize hidden state for first input
         hidden_i = self.init_hidden(batch_size)
 
-        # Pass in input and hidden state and obtain outputs
+        # Pass in input and hidden state and obtain outputsinput_size: Number of features of your input vector
+        #         hidden_size: Number of hidden neurons
+        #         output_size: Number of features of your output vector
         out, hidden_j = self.rnn(x, hidden_i)
 
-        # Reshapes the tensor to have self.hidden_dim columns and the according number of rows to keep the same total size
+        """ 
+        Reshapes the tensor to have self.hidden_dim columns and the according number of rows to keep the same total size
+        """
+        out = out[:, -1, :]
         out = out.contiguous().view(-1, self.hidden_dim)
-        out = self.fc(out[:, -1, :])
+        out = self.fc(out)
 
         return out, hidden_j
 
