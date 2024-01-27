@@ -21,7 +21,7 @@ def savez_numpy_data(file_path, data):
     savez_compressed(file_path, data)
 
 
-def convert_dict_key_to_numpy_arrays(dictionary, keys):
+def convert_t_dict_key_to_numpy_arrays(dictionary, keys):
     for key in keys:
         dictionary[key] = np.array(dictionary[key])
 

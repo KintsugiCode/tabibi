@@ -1,23 +1,21 @@
 import os
-import time
-import numpy as np
 from src.__helpers__.__utils__ import (
     convert_t_dict_key_to_numpy_arrays,
     convert_to_recarray,
     get_one_file_with_extension,
     savez_numpy_data,
 )
-from src.data_manipulation.transformers.normalization.train_mix_bass_data_normalizer import (
+from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
+from src.data_manipulation.transformers.padding.mix_bass_data_padder import data_padder
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
 
 
 def transform_mix_and_bass_to_spectrogram(
-    base_path, files_to_transform, save_file_path
+    base_path, files_to_transform, save_file_path, flag
 ):
     t_dict = {"x": list(), "y": list(), "mix_name": list()}
-    dim_for_padding = []
 
     """
      # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
@@ -25,6 +23,7 @@ def transform_mix_and_bass_to_spectrogram(
     """
 
     data_point_amount = 0
+    dim_for_padding = []
 
     # Iterates over all folders in base_path and checks if the folder is included in the files_to_transform list.
     # If yes, transforms the mix wav file and the bass wav file into spectograms.
@@ -32,7 +31,7 @@ def transform_mix_and_bass_to_spectrogram(
         if foldername in files_to_transform:
             for mix_file_name in os.listdir(f"{base_path}/{foldername}/"):
                 if mix_file_name.endswith(".wav"):
-                    print(f"@@@@@@ data_point: {mix_file_name} @@@@@@ ")
+                    print(f"@@ data_point: {mix_file_name} @@ ")
 
                     data_point_amount += 1
 
@@ -71,6 +70,7 @@ def transform_mix_and_bass_to_spectrogram(
                     t_dict["y"].append(bass_spectrogram)
                     t_dict["mix_name"].append(mix_file_name)
 
+                    # Track the dimensions for later padding
                     dim_for_padding.append(mix_spectrogram.shape[1])
 
                     # delete variables after use to free up memory
@@ -85,14 +85,18 @@ def transform_mix_and_bass_to_spectrogram(
         if data_point_amount == 2:
             break
 
-    # Pad the lists so that they all have the same dimensions
-    max_dimension = max(dim_for_padding)
-    t_dict["x"] = [
-        np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1]))) for arr in t_dict["x"]
-    ]
-    t_dict["y"] = [
-        np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1]))) for arr in t_dict["y"]
-    ]
+    try:
+        # Save max_dimension to later pad the dataset again after max_dimension of comparable datasets is known
+        max_dimension = max(dim_for_padding)
+    except Exception as e:
+        raise Exception(
+            "The dataset is missing data. E.g. the provided mixes have no accompanying bass tracks.".format(
+                e
+            )
+        )
+
+    # Padding and masking preparation
+    t_dict, x_length, y_length = data_padder(t_dict, max_dimension)
 
     # Save output into file
     t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
@@ -110,3 +114,5 @@ def transform_mix_and_bass_to_spectrogram(
     savez_numpy_data(file_path=f"{save_file_path}_normalized", data=t_dict_recarray)
 
     print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
+
+    return max_dimension, x_length, y_length
