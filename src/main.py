@@ -18,10 +18,10 @@ subset = "V1"
 BASE_PATH = f"./data/raw/{subset}"
 
 TRAIN_FOLDER_PATH = "./data/processed/train"
-TRAIN_FILE_NAME = f"mix_bass_train_data_{subset}"
+TRAIN_FILE_NAME = f"mix_bass_train_data_{subset}TEST"
 
 TEST_FOLDER_PATH = "./data/processed/test"
-TEST_FILE_NAME = f"mix_bass_test_data_{subset}"
+TEST_FILE_NAME = f"mix_bass_test_data_{subset}TEST"
 
 
 TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz"

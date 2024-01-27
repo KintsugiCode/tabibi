@@ -32,7 +32,7 @@ def transform_mix_and_bass_to_spectrogram(
         if foldername in files_to_transform:
             for mix_file_name in os.listdir(f"{base_path}/{foldername}/"):
                 if mix_file_name.endswith(".wav"):
-                    print(f"@@ data_point: {mix_file_name}")
+                    print(f"@@@@@@ data_point: {mix_file_name} @@@@@@ ")
 
                     data_point_amount += 1
 
@@ -78,6 +78,12 @@ def transform_mix_and_bass_to_spectrogram(
                     del bass_spectrogram
                     del mix_file_name
 
+                if data_point_amount == 2:
+                    break
+            if data_point_amount == 2:
+                break
+        if data_point_amount == 2:
+            break
     # Pad the x_train and y_train lists so that they all have the same dimensions
     max_dimension = max(dim_for_padding)
     train_dict["x_train"] = [

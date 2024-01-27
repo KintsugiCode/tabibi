@@ -40,11 +40,6 @@ class RNN(nn.Module):
         #         output_size: Number of features of your output vector
         out, hidden_j = self.rnn(x, hidden_i)
 
-        """ 
-        Reshapes the tensor to have self.hidden_dim columns and the according number of rows to keep the same total size
-        """
-        out = out[:, -1, :]
-        out = out.contiguous().view(-1, self.hidden_dim)
         out = self.fc(out)
 
         return out, hidden_j

@@ -1,6 +1,6 @@
 {
   "learning_rate": 0.01,
-  "batch_size": 32,
+  "batch_size": 20,
   "n_epochs": 2,
   "hidden_dim": 44,
   "n_layers": 2,
