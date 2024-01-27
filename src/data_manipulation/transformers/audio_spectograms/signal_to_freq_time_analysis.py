@@ -2,7 +2,7 @@ import os
 import time
 import numpy as np
 from src.__helpers__.__utils__ import (
-    convert_dict_key_to_numpy_arrays,
+    convert_t_dict_key_to_numpy_arrays,
     convert_to_recarray,
     get_one_file_with_extension,
     savez_numpy_data,
@@ -16,7 +16,7 @@ from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_anal
 def transform_mix_and_bass_to_spectrogram(
     base_path, files_to_transform, save_file_path
 ):
-    train_dict = {"x_train": list(), "y_train": list(), "mix_name": list()}
+    t_dict = {"x": list(), "y": list(), "mix_name": list()}
     dim_for_padding = []
 
     """
@@ -67,9 +67,9 @@ def transform_mix_and_bass_to_spectrogram(
                         file_path=bass_file_path
                     )
 
-                    train_dict["x_train"].append(mix_spectrogram)
-                    train_dict["y_train"].append(bass_spectrogram)
-                    train_dict["mix_name"].append(mix_file_name)
+                    t_dict["x"].append(mix_spectrogram)
+                    t_dict["y"].append(bass_spectrogram)
+                    t_dict["mix_name"].append(mix_file_name)
 
                     dim_for_padding.append(mix_spectrogram.shape[1])
 
@@ -84,32 +84,29 @@ def transform_mix_and_bass_to_spectrogram(
                 break
         if data_point_amount == 2:
             break
-    # Pad the x_train and y_train lists so that they all have the same dimensions
+
+    # Pad the lists so that they all have the same dimensions
     max_dimension = max(dim_for_padding)
-    train_dict["x_train"] = [
-        np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1])))
-        for arr in train_dict["x_train"]
+    t_dict["x"] = [
+        np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1]))) for arr in t_dict["x"]
     ]
-    train_dict["y_train"] = [
-        np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1])))
-        for arr in train_dict["y_train"]
+    t_dict["y"] = [
+        np.pad(arr, ((0, 0), (0, max_dimension - arr.shape[1]))) for arr in t_dict["y"]
     ]
 
     # Save output into file
-    train_dict = convert_dict_key_to_numpy_arrays(
-        dictionary=train_dict, keys=["x_train", "y_train"]
-    )
-    train_dict_recarray = convert_to_recarray(data_dict=train_dict)
+    t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
+    t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
     # Save un-normalized data
-    savez_numpy_data(file_path=save_file_path, data=train_dict_recarray)
+    savez_numpy_data(file_path=save_file_path, data=t_dict_recarray)
 
     # Normalize the data
-    train_dict["x_train"] = Normalizer(train_dict["x_train"]).normalize()
-    train_dict["y_train"] = Normalizer(train_dict["y_train"]).normalize()
-    train_dict_recarray = convert_to_recarray(data_dict=train_dict)
+    t_dict["x"] = Normalizer(t_dict["x"]).normalize()
+    t_dict["y"] = Normalizer(t_dict["y"]).normalize()
+    t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
     # Save normalized data
-    savez_numpy_data(file_path=f"{save_file_path}_normalized", data=train_dict_recarray)
+    savez_numpy_data(file_path=f"{save_file_path}_normalized", data=t_dict_recarray)
 
     print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
