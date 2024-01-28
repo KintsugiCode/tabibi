@@ -13,7 +13,7 @@ from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_anal
 
 
 def transform_mix_and_bass_to_spectrogram(
-    base_path, files_to_transform, save_file_path, flag
+    base_path, files_to_transform, save_file_path
 ):
     t_dict = {"x": list(), "y": list(), "mix_name": list()}
 
@@ -33,8 +33,6 @@ def transform_mix_and_bass_to_spectrogram(
                 if mix_file_name.endswith(".wav"):
                     print(f"@@ data_point: {mix_file_name} @@ ")
 
-                    data_point_amount += 1
-
                     mix_folder_path = f"{base_path}/{foldername}"
                     mix_file_path = f"{mix_folder_path}/{mix_file_name}"
 
@@ -45,6 +43,12 @@ def transform_mix_and_bass_to_spectrogram(
                         directory_path=bass_folder_path, extension="wav"
                     )
                     print(bass_file_name)
+                    # Ignore all mix files where matching bass file is missing
+                    if bass_file_name is None:
+                        print("@@ SKIPPED @@")
+                        print()
+                        break
+
                     print()
 
                     """
@@ -55,8 +59,6 @@ def transform_mix_and_bass_to_spectrogram(
                         time.sleep(30)
                     """
 
-                    if bass_file_name is None:
-                        continue
                     bass_file_path = f"{bass_folder_path}/{bass_file_name}"
 
                     mix_spectrogram = audio_to_freq_time_analysis(
@@ -78,11 +80,13 @@ def transform_mix_and_bass_to_spectrogram(
                     del bass_spectrogram
                     del mix_file_name
 
-                if data_point_amount == 2:
+                    data_point_amount += 1
+
+                if data_point_amount == 6:
                     break
-            if data_point_amount == 2:
+            if data_point_amount == 6:
                 break
-        if data_point_amount == 2:
+        if data_point_amount == 6:
             break
 
     try:

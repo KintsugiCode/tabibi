@@ -13,7 +13,7 @@ from src.data_manipulation.transformers.audio_spectograms.signal_to_freq_time_an
 )
 from src.data_manipulation.transformers.padding.mix_bass_data_padder import data_padder
 from src.models.audio_separation.rnn.rnn import RNN
-
+from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 
 # relative paths to dataset as seen from this main.py file
 subset = "V1"
@@ -28,6 +28,8 @@ TEST_FILE_NAME = f"mix_bass_test_data_{subset}TEST"
 
 TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz"
 TEST_FILE_PATH = f"{TEST_FOLDER_PATH}/{TEST_FILE_NAME}.npz"
+
+PRED_AUDIO_FILE_PATH = "./visualization/predicted_audio"
 
 
 with open("./config/hyperparameters_audio.json") as hyperparameters_file:
@@ -49,7 +51,6 @@ def main():
         base_path=BASE_PATH,
         files_to_transform=train_files,
         save_file_path=TRAIN_FILE_PATH,
-        flag="train",
     )
     # Transform testing data and receive max_dimension
     print("@@@@@@ Transforming testing data @@@@@@")
@@ -61,7 +62,6 @@ def main():
         base_path=BASE_PATH,
         files_to_transform=test_files,
         save_file_path=TEST_FILE_PATH,
-        flag="test",
     )
 
     # Load the training dataset
@@ -140,24 +140,13 @@ def main():
     # Pass x_test through the model to get y_pred
     y_pred, _ = model(x_test)
 
-    # Reshape tensors to [nsrc, nsample, nchan] format for Museval as it requires this format.
-    # We consider nchan = number of frequency buckets,
-    # nsrc = number of sources (1, as our data is mono audio), and nsample = number of time steps.
-    y_test = y_test.permute([0, 2, 1])
-    y_pred = y_pred.permute(0, 2, 1)
-
-    # No need to track gradients in testing, can speed up computations
-    with torch.no_grad():
-        for i in range(y_test.shape[0]):
-            true_sources = y_test[i].numpy()
-            estimated_sources = y_pred[i].numpy()
-            # compute all three metrics (SDR, SIR, SAR)
-            scores = museval.evaluate(true_sources, estimated_sources)
-            for score_name, score_value in scores.items():
-                print(f"{score_name} = {np.mean(score_value):.3f}")
-
     test_loss = criterion(y_pred, y_test)
     print(f"Test loss: {test_loss.item():.3f}")
+
+    # Convert tensor back into numpy array and then back to audio
+    y_pred = y_pred.detach().cpu().numpy()
+    bla = y_pred.shape[0]
+    freq_time_analysis_to_audio(y_pred, PRED_AUDIO_FILE_PATH)
 
 
 if __name__ == "__main__":

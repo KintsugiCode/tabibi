@@ -1,15 +1,14 @@
 import librosa
-import numpy as np
+import soundfile as sf
 
 
-def freq_time_analysis_to_audio(input_file_path, output_file_path):
+def freq_time_analysis_to_audio(spectogram_array, output_file_path):
     try:
-        # Use librosa to load stft file
-        stft_data = librosa.load(input_file_path)
-        # Perform istft
-        audio = librosa.istft(stft_data)
-        # Save the audio to file
-        librosa.output.write_wav(f"{output_file_path}/output.wav", audio, sr=22050)
+        for track in range(spectogram_array.shape[0]):
+            # Perform istft directly on each spectogram
+            audio = librosa.istft(spectogram_array[track])
+            # Save the audio to file
+            sf.write(f"{output_file_path}/Track_{track}.wav", audio, 22050)
 
     except Exception as e:
         raise Exception("Exception occurred: {}".format(e))
