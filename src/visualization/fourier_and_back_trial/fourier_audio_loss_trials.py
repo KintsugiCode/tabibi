@@ -7,7 +7,7 @@ from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer i
 )
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 
-INPUT_FILE_PATH = "audio/MusicDelta_80sRock_MIX.wav"
+INPUT_FILE_PATH = "audio/MusicDelta_80sRock/MusicDelta_80sRock_MIX.wav"
 
 
 def fourier_audio_loss(file_path):

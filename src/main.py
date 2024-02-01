@@ -1,9 +1,6 @@
-import museval
-import numpy as np
 import torch
 import torch.nn as nn
 import json
-from torch.nn.utils.rnn import pad_sequence
 from src.__helpers__.__utils__ import load_numpy_data
 from src.data_manipulation.data_splitter.train_test_split import (
     train_test_splitter,
@@ -11,14 +8,10 @@ from src.data_manipulation.data_splitter.train_test_split import (
 from src.data_manipulation.transformers.audio_spectrograms.signal_to_freq_time_analysis import (
     transform_mix_and_bass_to_spectrogram,
 )
-from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer import (
-    Normalizer,
-)
-from src.data_manipulation.transformers.padding.mix_bass_data_padder import data_padder
 from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
     data_overall_truncator,
 )
-from src.models.audio_separation.rnn.rnn import RNN
+from src.models.audio_separation.gru.gru import GRU
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 
 # relative paths to dataset as seen from this main.py file
@@ -82,7 +75,7 @@ def main():
 
     # Initialize the model
     print("@@@@@@ Initializing the model @@@@@@")
-    model = RNN(
+    model = GRU(
         input_size=x_train.shape[2],
         hidden_dim=hyperparameters["hidden_dim"],
         n_layers=hyperparameters["n_layers"],
