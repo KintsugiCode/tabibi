@@ -64,10 +64,10 @@ def transform_mix_and_bass_to_spectrogram(
 
                     bass_file_path = f"{bass_folder_path}/{bass_file_name}"
 
-                    mix_spectrogram = audio_to_freq_time_analysis(
+                    mix_spectrogram, _ = audio_to_freq_time_analysis(
                         file_path=mix_file_path
                     )
-                    bass_spectrogram = audio_to_freq_time_analysis(
+                    bass_spectrogram, _ = audio_to_freq_time_analysis(
                         file_path=bass_file_path
                     )
 
