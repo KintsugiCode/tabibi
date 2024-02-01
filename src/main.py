@@ -13,6 +13,9 @@ from src.data_manipulation.transformers.truncating.mix_bass_data_truncator impor
 )
 from src.models.audio_separation.gru.gru import GRU
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
+from src.visualization.freq_time_analysis_transformed.visualize_mag_spectrograms import (
+    visualize_spectrograms,
+)
 
 # relative paths to dataset as seen from this main.py file
 subset = "V1"
@@ -30,6 +33,10 @@ TEST_FILE_PATH = f"{TEST_FOLDER_PATH}/normalized_{TEST_FILE_NAME}.npz"
 
 TRAINED_AUDIO_FILE_PATH = "./visualization/trained_audio"
 PRED_AUDIO_FILE_PATH = "./visualization/predicted_audio"
+
+VISUALIZATION_SAVE_PATH = (
+    "./visualization/freq_time_analysis_transformed/spectrograms_visualized"
+)
 
 
 with open("./config/hyperparameters_audio.json") as hyperparameters_file:
@@ -113,10 +120,19 @@ def main():
             x_train,
         )
 
+        # Visualizations and audio-transforms for manual evaluation
         if epoch == hyperparameters["n_epochs"] - 1:
             # Convert tensor back into numpy array and then back to audio
             outputs_for_visualization = outputs.detach().cpu().numpy()
             # Convert first three tracks back to audio for review
+            x_train_for_visualization = x_train.detach().cpu().numpy()
+            y_train_for_visualization = y_train.detach().cpu().numpy()
+            visualize_spectrograms(
+                VISUALIZATION_SAVE_PATH,
+                x_train_for_visualization[0],
+                y_train_for_visualization[0],
+                outputs_for_visualization[0],
+            )
             freq_time_analysis_to_audio(
                 outputs_for_visualization[:3],
                 TRAINED_AUDIO_FILE_PATH,
@@ -124,6 +140,7 @@ def main():
                 data_train["min_max_amplitudes"],
                 flag="TRAINING-",
             )
+
         print("@@@@@@ Calculating loss @@@@@@")
         loss = criterion(outputs, y_train)
 
