@@ -85,6 +85,13 @@ def transform_mix_and_bass_to_spectrogram(
 
                     data_point_amount += 1
 
+                if data_point_amount == 1:
+                    break
+            if data_point_amount == 1:
+                break
+        if data_point_amount == 1:
+            break
+
     try:
         # Save min_dimension to later truncate the dataset again after min_dimension of comparable datasets is known
         min_dimension = min(dim_for_padding)
