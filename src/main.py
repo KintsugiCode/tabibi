@@ -8,10 +8,16 @@ from src.__helpers__.__utils__ import load_numpy_data
 from src.data_manipulation.data_splitter.train_test_split import (
     train_test_splitter,
 )
-from src.data_manipulation.transformers.audio_spectograms.signal_to_freq_time_analysis import (
+from src.data_manipulation.transformers.audio_spectrograms.signal_to_freq_time_analysis import (
     transform_mix_and_bass_to_spectrogram,
 )
+from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer import (
+    Normalizer,
+)
 from src.data_manipulation.transformers.padding.mix_bass_data_padder import data_padder
+from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
+    data_overall_truncator,
+)
 from src.models.audio_separation.rnn.rnn import RNN
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 
@@ -26,9 +32,10 @@ TEST_FOLDER_PATH = "./data/processed/test"
 TEST_FILE_NAME = f"mix_bass_test_data_{subset}TEST"
 
 
-TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz"
-TEST_FILE_PATH = f"{TEST_FOLDER_PATH}/{TEST_FILE_NAME}.npz"
+TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/normalized_{TRAIN_FILE_NAME}.npz"
+TEST_FILE_PATH = f"{TEST_FOLDER_PATH}/normalized_{TEST_FILE_NAME}.npz"
 
+TRAINED_AUDIO_FILE_PATH = "./visualization/trained_audio"
 PRED_AUDIO_FILE_PATH = "./visualization/predicted_audio"
 
 
@@ -43,22 +50,15 @@ def main():
 
     # Transform training data and receive max_dimension
     print("@@@@@@ Transforming training data @@@@@@")
-    (
-        max_dimension_train,
-        x_length_train,
-        y_length_train,
-    ) = transform_mix_and_bass_to_spectrogram(
+
+    (min_dimension_train) = transform_mix_and_bass_to_spectrogram(
         base_path=BASE_PATH,
         files_to_transform=train_files,
         save_file_path=TRAIN_FILE_PATH,
     )
     # Transform testing data and receive max_dimension
     print("@@@@@@ Transforming testing data @@@@@@")
-    (
-        max_dimension_test,
-        x_length_test,
-        y_length_test,
-    ) = transform_mix_and_bass_to_spectrogram(
+    (min_dimension_test) = transform_mix_and_bass_to_spectrogram(
         base_path=BASE_PATH,
         files_to_transform=test_files,
         save_file_path=TEST_FILE_PATH,
@@ -66,15 +66,19 @@ def main():
 
     # Load the training dataset
     print("@@@@@@ Loading the training dataset @@@@@@")
-    data = load_numpy_data(f"{TRAIN_FOLDER_PATH}/{TRAIN_FILE_NAME}.npz")
+    data_train = load_numpy_data(
+        f"{TRAIN_FOLDER_PATH}/normalized_{TRAIN_FILE_NAME}.npz"
+    )
 
-    # Pad the training dataset to the largest dimension
-    data, *_ = data_padder(data, max_dimension_train, max_dimension_test)
+    # Truncate the training dataset to the smallest dimension
+    data_train = data_overall_truncator(
+        data_train, min_dimension_train, min_dimension_test
+    )
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
     print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
-    x_train = torch.stack([torch.tensor(x) for x in data["x"]])
-    y_train = torch.stack([torch.tensor(y) for y in data["y"]])
+    x_train = torch.stack([torch.tensor(x) for x in data_train["x"]])
+    y_train = torch.stack([torch.tensor(y) for y in data_train["y"]])
 
     # Initialize the model
     print("@@@@@@ Initializing the model @@@@@@")
@@ -83,11 +87,18 @@ def main():
         hidden_dim=hyperparameters["hidden_dim"],
         n_layers=hyperparameters["n_layers"],
         output_size=y_train.shape[2],
+        dropout_rate=hyperparameters["dropout_rate"],
     )
 
     # Choose a loss function and an optimizer
     criterion = nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(
+        model.parameters(), lr=hyperparameters["learning_rate"]
+    )
+
+    # Track loss to break training loop if loss is no longer changing
+    no_change = 0
+    prev_loss = float("inf")
 
     # Train the model with the training data
     print("@@@@@@ Starting model training @@@@@@")
@@ -108,6 +119,18 @@ def main():
         outputs, _ = model(
             x_train,
         )
+
+        if epoch == hyperparameters["n_epochs"] - 1:
+            # Convert tensor back into numpy array and then back to audio
+            outputs_for_visualization = outputs.detach().cpu().numpy()
+            # Convert first three tracks back to audio for review
+            freq_time_analysis_to_audio(
+                outputs_for_visualization[:3],
+                TRAINED_AUDIO_FILE_PATH,
+                data_train["mix_name"],
+                data_train["min_max_amplitudes"],
+                flag="TRAINING-",
+            )
         print("@@@@@@ Calculating loss @@@@@@")
         loss = criterion(outputs, y_train)
 
@@ -118,19 +141,33 @@ def main():
         optimizer.step()
 
         # print statistics
-        print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.3f} @@@@@@")
+        print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@@@@@")
+
+        # Check if loss is not changing
+        if abs(prev_loss - loss.item()) < 1e-7:  # small threshold to count as no change
+            no_change += 1
+        else:
+            no_change = 0
+
+        prev_loss = loss.item()
+
+        if no_change >= 20:
+            print("@@@@@@ Stopping early - loss hasn't changed in 20 epochs. @@@@@@ ")
+            break
 
     # Load the testing dataset
     print("@@@@@@ Loading the testing dataset @@@@@@")
-    data = load_numpy_data(f"{TEST_FOLDER_PATH}/{TEST_FILE_NAME}.npz")
+    data_test = load_numpy_data(f"{TEST_FOLDER_PATH}/normalized_{TEST_FILE_NAME}.npz")
 
-    # Pad the training dataset to the largest dimension
-    data, *_ = data_padder(data, max_dimension_train, max_dimension_test)
+    # Truncate the training dataset to the smallest dimension
+    data_test = data_overall_truncator(
+        data_test, min_dimension_train, min_dimension_test
+    )
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
     print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
-    x_test = torch.stack([torch.tensor(x) for x in data["x"]])
-    y_test = torch.stack([torch.tensor(y) for y in data["y"]])
+    x_test = torch.stack([torch.tensor(x) for x in data_test["x"]])
+    y_test = torch.stack([torch.tensor(y) for y in data_test["y"]])
 
     # Test the model
     print("@@@@@@ Starting model testing @@@@@@")
@@ -141,12 +178,18 @@ def main():
     y_pred, _ = model(x_test)
 
     test_loss = criterion(y_pred, y_test)
-    print(f"Test loss: {test_loss.item():.3f}")
+    print(f"Test loss: {test_loss.item():.7f}")
 
     # Convert tensor back into numpy array and then back to audio
     y_pred = y_pred.detach().cpu().numpy()
-    bla = y_pred.shape[0]
-    freq_time_analysis_to_audio(y_pred, PRED_AUDIO_FILE_PATH)
+    # Convert first three tracks back to audio for review
+    freq_time_analysis_to_audio(
+        y_pred[:3],
+        PRED_AUDIO_FILE_PATH,
+        data_test["mix_name"],
+        data_test["min_max_amplitudes"],
+        flag="TESTING-",
+    )
 
 
 if __name__ == "__main__":

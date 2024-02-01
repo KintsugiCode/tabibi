@@ -7,7 +7,7 @@ src/transformers/__tests__/test_data/*
 # Visualized Output
 
 src/visualization/predicted_audio/*
-src/visualization/fourier_and_back_trial/audio_outputs/*
+src/visualization/fourier_and_back_trial/audio/*
 
 # Distribution / packaging
 .Python

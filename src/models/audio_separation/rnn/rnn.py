@@ -4,7 +4,7 @@ import json
 
 
 class RNN(nn.Module):
-    def __init__(self, input_size, hidden_dim, n_layers, output_size):
+    def __init__(self, input_size, hidden_dim, n_layers, output_size, dropout_rate):
         super(RNN, self).__init__()
 
         # Number of hidden dimensions
@@ -13,13 +13,21 @@ class RNN(nn.Module):
         # Number of hidden layers
         self.n_layers = n_layers
 
+        # Dropout rate
+        self.dropout_rate = dropout_rate
+
         # RNN
         self.rnn = nn.RNN(
             input_size, hidden_dim, n_layers, batch_first=True, nonlinearity="relu"
         )
 
-        # Readout layer
-        self.fc = nn.Linear(hidden_dim, output_size)
+        # Dropout layer
+        self.dropout = nn.Dropout(dropout_rate)
+
+        # Readout layers - Increased capacity with the addition of another fully connected layer
+        self.fc1 = nn.Linear(hidden_dim, hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+        self.fc3 = nn.Linear(hidden_dim, output_size)
 
     def forward(self, x):
         """
@@ -35,12 +43,17 @@ class RNN(nn.Module):
         # Initialize hidden state for first input
         hidden_i = self.init_hidden(batch_size)
 
-        # Pass in input and hidden state and obtain outputsinput_size: Number of features of your input vector
-        #         hidden_size: Number of hidden neurons
-        #         output_size: Number of features of your output vector
+        # Pass in input and hidden state and obtain outputs
         out, hidden_j = self.rnn(x, hidden_i)
 
-        out = self.fc(out)
+        # Pass output through dropout layer
+        out = self.dropout(out)
+
+        out = self.fc1(out)
+        out = torch.relu(out)
+        out = self.fc2(out)
+        out = torch.relu(out)
+        out = self.fc3(out)
 
         return out, hidden_j
 
