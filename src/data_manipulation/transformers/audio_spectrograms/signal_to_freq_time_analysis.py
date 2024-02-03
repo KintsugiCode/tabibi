@@ -64,10 +64,10 @@ def transform_mix_and_bass_to_spectrogram(
 
                     bass_file_path = f"{bass_folder_path}/{bass_file_name}"
 
-                    mix_spectrogram = audio_to_freq_time_analysis(
+                    mix_spectrogram, _ = audio_to_freq_time_analysis(
                         file_path=mix_file_path
                     )
-                    bass_spectrogram = audio_to_freq_time_analysis(
+                    bass_spectrogram, _ = audio_to_freq_time_analysis(
                         file_path=bass_file_path
                     )
 
@@ -84,6 +84,13 @@ def transform_mix_and_bass_to_spectrogram(
                     del mix_file_name
 
                     data_point_amount += 1
+
+                if data_point_amount == 1:
+                    break
+            if data_point_amount == 1:
+                break
+        if data_point_amount == 1:
+            break
 
     try:
         # Save min_dimension to later truncate the dataset again after min_dimension of comparable datasets is known
