@@ -22,7 +22,7 @@ def freq_time_analysis_to_audio(
             # inverts stft whilst estimating phase -- is much clearer than librosa.istft
             audio = librosa.griffinlim(spectrogram_array[track])
             # Save the audio to file
-            sf.write(f"{output_file_path}/{flag}{mix_names[track]}", audio, 22050)
+            sf.write(f"{output_file_path}/{flag}{mix_names[track]}", audio, 44100)
         print("@@@@@@ Audio recreation completed @@@@@@")
 
     except Exception as e:

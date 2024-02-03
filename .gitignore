@@ -1,7 +1,6 @@
 
 # Datasets
 
-src/data/*
 src/transformers/__tests__/test_data/*
 
 # Visualized Output

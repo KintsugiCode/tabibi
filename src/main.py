@@ -1,6 +1,12 @@
 import torch
 import torch.nn as nn
 import json
+
+# @@@@ START of AWS CODE
+import sys
+sys.path.append('/home/tabibi/') 
+# @@@@ END of AWS CODE
+
 from src.__helpers__.__utils__ import load_numpy_data
 from src.data_manipulation.data_splitter.train_test_split import (
     train_test_splitter,
@@ -17,29 +23,32 @@ from src.visualization.freq_time_analysis_transformed.visualize_mag_spectrograms
     visualize_spectrograms,
 )
 
-# relative paths to dataset as seen from this main.py file
-subset = "V1"
-BASE_PATH = f"./data/raw/{subset}"
 
-TRAIN_FOLDER_PATH = "./data/processed/train"
+# relative paths to dataset as seen from this main.py file
+
+
+subset = "V1"
+BASE_PATH = f"/home/tabibi/src/data/raw/{subset}"
+
+TRAIN_FOLDER_PATH = "/home/tabibi/src/data/processed/train"
 TRAIN_FILE_NAME = f"mix_bass_train_data_{subset}TEST"
 
-TEST_FOLDER_PATH = "./data/processed/test"
+TEST_FOLDER_PATH = "/home/tabibi/src/data/processed/test"
 TEST_FILE_NAME = f"mix_bass_test_data_{subset}TEST"
 
 
 TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/normalized_{TRAIN_FILE_NAME}.npz"
 TEST_FILE_PATH = f"{TEST_FOLDER_PATH}/normalized_{TEST_FILE_NAME}.npz"
 
-TRAINED_AUDIO_FILE_PATH = "./visualization/trained_audio"
-PRED_AUDIO_FILE_PATH = "./visualization/predicted_audio"
+TRAINED_AUDIO_FILE_PATH = "/home/tabibi/src/visualization/trained_audio"
+PRED_AUDIO_FILE_PATH = "/home/tabibi/src/visualization/predicted_audio"
 
 VISUALIZATION_SAVE_PATH = (
-    "./visualization/freq_time_analysis_transformed/spectrograms_visualized"
+    "/home/tabibi/src/visualization/freq_time_analysis_transformed/spectrograms_visualized"
 )
 
 
-with open("./config/hyperparameters_audio.json") as hyperparameters_file:
+with open("/home/tabibi/src/config/hyperparameters_audio.json") as hyperparameters_file:
     hyperparameters = json.load(hyperparameters_file)
 
 
@@ -92,7 +101,7 @@ def main():
 
     # Choose a loss function and an optimizer
     criterion = nn.MSELoss()
-    optimizer = torch.optim.Adam(
+    optimizer = torch.optim.RMSprop(
         model.parameters(), lr=hyperparameters["learning_rate"]
     )
 
