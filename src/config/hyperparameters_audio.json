@@ -1,5 +1,9 @@
 {
+<<<<<<< Updated upstream
   "learning_rate": 0.00001,
+=======
+  "learning_rate": 0.0001,
+>>>>>>> Stashed changes
   "n_epochs": 1000,
   "hidden_dim": 256,
   "n_layers": 16,

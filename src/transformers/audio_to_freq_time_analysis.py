@@ -8,9 +8,15 @@ def audio_to_freq_time_analysis(file_path):
         signal, sample_rate = librosa.load(file_path, sr=44100, mono=True)
 
         # STFT -> spectrogram
+<<<<<<< Updated upstream
         hop_length = 512  # in num. of samples
         n_fft = 2048  # window in num. of samples
         n_mels = 128  # number of mel bands to generate
+=======
+        hop_length = 60  # in num. of samples
+        n_fft = 6000  # window in num. of samples
+        n_mels = 400  # number of mel bands to generate
+>>>>>>> Stashed changes
 
         # perform stft
         stft = librosa.stft(signal, n_fft=n_fft, hop_length=hop_length)
