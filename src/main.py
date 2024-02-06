@@ -27,7 +27,7 @@ with open(hyperparameters_path) as hyperparameters_file:
 
 
 # relative paths to dataset as seen from this main.py file
-subset = "V1"
+subset = "V2"
 BASE_PATH = f"{dir_path}/data/raw/{subset}"
 
 TRAIN_FOLDER_PATH = f"{dir_path}/data/processed/train"
@@ -149,7 +149,7 @@ def main():
         print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@@@@@")
 
         # Reduce learning rate once when loss is lower
-        if loss.item() < 0.0001 and not lr_reduced_roughgrain:
+        if loss.item() < 0.00014 and not lr_reduced_roughgrain:
             print("@@@@@@@@@@")
             print("@@@@@@@@@@")
             print("@@@@@@ Cutting learning_rate in half @@@@@@")
@@ -159,7 +159,7 @@ def main():
                 g["lr"] = g["lr"] / 2
             lr_reduced_roughgrain = True
         # Reduce learning rate once when loss is lower
-        if loss.item() < 0.000075 and not lr_reduced_finegrain:
+        if loss.item() < 0.00008 and not lr_reduced_finegrain:
             print("@@@@@@@@@@")
             print("@@@@@@@@@@")
             print("@@@@@@ Cutting learning_rate in half @@@@@@")
@@ -189,7 +189,7 @@ def main():
                 TRAINED_AUDIO_FILE_PATH,
                 data_train["mix_name"],
                 data_train["min_max_amplitudes"],
-                flag="TRAINING-",
+                flag="TRAINING",
             )
 
         # Check if loss is not changing
@@ -220,7 +220,7 @@ def main():
                 TRAINED_AUDIO_FILE_PATH,
                 data_train["mix_name"],
                 data_train["min_max_amplitudes"],
-                flag="TRAINING-",
+                flag="TRAINING",
             )
             break
 
@@ -249,7 +249,7 @@ def main():
         PRED_AUDIO_FILE_PATH,
         data_test["mix_name"],
         data_test["min_max_amplitudes"],
-        flag="TESTING-",
+        flag="TESTING",
     )
 
 

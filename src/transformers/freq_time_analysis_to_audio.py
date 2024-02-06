@@ -37,7 +37,10 @@ def freq_time_analysis_to_audio(
     flag,
 ):
     try:
+        track_counter = 0
+
         for track in range(mel_spectrogram_array.shape[0]):
+            track_counter += 1
             min_val, max_val = min_max_amplitudes
             mel_spectrogram_array[track] = Normalizer(
                 mel_spectrogram_array[track]
@@ -59,7 +62,7 @@ def freq_time_analysis_to_audio(
 
             # Save the audio to file
             sf.write(
-                f"{output_file_path}/{flag}{mix_names[track]}",
+                f"{output_file_path}/{track_counter}-{flag}-{mix_names[track]}",
                 audio,
                 fourierparameters["sample_rate"],
             )
