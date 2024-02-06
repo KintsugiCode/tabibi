@@ -8,6 +8,9 @@ def data_initial_truncator(data, min_dimension):
     data["x"] = [arr[:, :min_dimension] for arr in data["x"]]
     data["y"] = [arr[:, :min_dimension] for arr in data["y"]]
 
+    data["x_phase"] = [arr[:, :min_dimension] for arr in data["x"]]
+    data["y_phase"] = [arr[:, :min_dimension] for arr in data["y"]]
+
     return data
 
 
@@ -16,5 +19,8 @@ def data_overall_truncator(data, min_dimension_train, min_dimension_test=np.inf)
 
     data["x"] = [arr[:, :min_dimension] for arr in data["x"]]
     data["y"] = [arr[:, :min_dimension] for arr in data["y"]]
+
+    data["x_phase"] = [arr[:, :min_dimension] for arr in data["x"]]
+    data["y_phase"] = [arr[:, :min_dimension] for arr in data["y"]]
 
     return data

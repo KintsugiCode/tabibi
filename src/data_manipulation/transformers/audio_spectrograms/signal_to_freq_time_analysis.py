@@ -1,4 +1,6 @@
 import os
+import time
+
 from src.__helpers__.__utils__ import (
     convert_t_dict_key_to_numpy_arrays,
     convert_to_recarray,
@@ -18,10 +20,17 @@ from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_anal
 def transform_mix_and_bass_to_spectrogram(
     base_path, files_to_transform, save_file_path
 ):
-    t_dict = {"x": list(), "y": list(), "mix_name": list()}
+    t_dict = {
+        "x": list(),
+        "y": list(),
+        "x_phase": list(),
+        "y_phase": list(),
+        "mix_name": list(),
+        "min_dimension": 0,
+    }
 
     """
-     # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
+    # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
     data_point_multitude = 1
     """
 
@@ -56,23 +65,25 @@ def transform_mix_and_bass_to_spectrogram(
 
                     """
                     # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
-                    if data_point_amount == (data_point_multitude * 30):
-                        print("Waiting for 30 seconds")
+                    if data_point_amount == (data_point_multitude * 10):
+                        print("Waiting for 10 seconds")
                         data_point_multitude += 1
-                        time.sleep(30)
+                        time.sleep(10)
                     """
 
                     bass_file_path = f"{bass_folder_path}/{bass_file_name}"
 
-                    mix_spectrogram, _ = audio_to_freq_time_analysis(
+                    mix_spectrogram, mix_phase = audio_to_freq_time_analysis(
                         file_path=mix_file_path
                     )
-                    bass_spectrogram, _ = audio_to_freq_time_analysis(
-                        file_path=bass_file_path
+                    bass_spectrogram, bass_phase = audio_to_freq_time_analysis(
+                        file_path=bass_file_path, flag=True
                     )
 
                     t_dict["x"].append(mix_spectrogram)
                     t_dict["y"].append(bass_spectrogram)
+                    t_dict["x_phase"].append(mix_phase)
+                    t_dict["y_phase"].append(bass_phase)
                     t_dict["mix_name"].append(mix_file_name)
 
                     # Track the dimensions for later padding
@@ -84,13 +95,14 @@ def transform_mix_and_bass_to_spectrogram(
                     del mix_file_name
 
                     data_point_amount += 1
-
+        """
                 if data_point_amount == 1:
                     break
             if data_point_amount == 1:
                 break
         if data_point_amount == 1:
             break
+        """
 
     try:
         # Save min_dimension to later truncate the dataset again after min_dimension of comparable datasets is known
@@ -104,6 +116,7 @@ def transform_mix_and_bass_to_spectrogram(
 
     # Padding and masking preparation
     t_dict = data_initial_truncator(data=t_dict, min_dimension=min_dimension)
+    t_dict["min_dimension"] = min_dimension
 
     # Transform to recarray
     t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
@@ -125,5 +138,3 @@ def transform_mix_and_bass_to_spectrogram(
     savez_numpy_data(file_path=f"{save_file_path}", data=t_dict_recarray)
 
     print(f"@@@@@@@@@@ Processed wav files: {data_point_amount}")
-
-    return min_dimension

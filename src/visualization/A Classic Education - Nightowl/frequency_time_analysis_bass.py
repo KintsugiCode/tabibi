@@ -2,12 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import librosa
 import librosa.display
+import json
+
+with open("../../config/fourierparameters.json") as fourierparameters_file:
+    fourierparameters = json.load(fourierparameters_file)
+
 
 # file location
 file = "../src/data/raw/V1/AClassicEducation_NightOwl/AClassicEducation_NightOwl_RAW/AClassicEducation_NightOwl_RAW_01_01.wav"
 
 # use librosa to load audio file
-signal, sample_rate = librosa.load(file, sr=22050)
+signal, sample_rate = librosa.load(file, sr=fourierparameters["sample_rate"])
 
 
 # display waveform
@@ -19,8 +24,8 @@ plt.title("Waveform)")
 
 
 # STFT -> spectrogram
-hop_length = 512  # in num. of samples
-n_fft = 2048  # window in num. of samples
+hop_length = fourierparameters["hop_length"]  # in num. of samples
+n_fft = fourierparameters["n_fft"]  # window in num. of samples
 
 # calculate duration hop length and window in seconds
 hop_length_duration = float(hop_length) / sample_rate
