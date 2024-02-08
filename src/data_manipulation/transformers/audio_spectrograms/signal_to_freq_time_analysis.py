@@ -3,9 +3,9 @@ import time
 
 from src.__helpers__.__utils__ import (
     convert_t_dict_key_to_numpy_arrays,
-    convert_to_recarray,
     get_one_file_with_extension,
     savez_numpy_data,
+    convert_to_recarray,
 )
 from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer import (
     Normalizer,
@@ -37,8 +37,10 @@ def transform_mix_and_bass_to_spectrogram(
     data_point_amount = 0
     dim = []
 
+    """
     # Iterates over all folders in base_path and checks if the folder is included in the files_to_transform list.
     # If yes, transforms the mix wav file and the bass wav file into spectrograms.
+    """
     for foldername in os.listdir(f"{base_path}"):
         if foldername in files_to_transform:
             for mix_file_name in os.listdir(f"{base_path}/{foldername}/"):
@@ -97,7 +99,7 @@ def transform_mix_and_bass_to_spectrogram(
                     data_point_amount += 1
 
     try:
-        # Save min_dimension to later truncate the dataset again after min_dimension of comparable datasets is known
+        # Save min_dimension to later truncate the dataset again after overall min_dimension of datasets is known
         min_dimension = min(dim)
     except Exception as e:
         raise Exception(
@@ -112,7 +114,6 @@ def transform_mix_and_bass_to_spectrogram(
 
     # Transform to recarray
     t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
-    t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
     """
     # Save un-normalized data

@@ -11,7 +11,7 @@ class Normalizer:
         # find min and max values of array
         self.min_val, self.max_val = np.min(self.array), np.max(self.array)
 
-        # avoid division by zero error in case of all same elements
+        # avoid division-by-zero error in case of all same elements
         if self.min_val == self.max_val:
             self.array[:] = 0
         else:
