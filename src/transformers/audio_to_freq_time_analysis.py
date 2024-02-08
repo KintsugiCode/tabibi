@@ -21,6 +21,23 @@ def audio_to_freq_time_analysis(file_path, flag=False):
             file_path, sr=fourierparameters["sample_rate"], mono=True
         )
 
+        # determine the indices for the middle 10 seconds
+        start_idx = int(
+            (
+                len(signal) / fourierparameters["sample_rate"]
+                - fourierparameters["track_seconds_considered"]
+            )
+            / 2
+            * fourierparameters["sample_rate"]
+        )
+        end_idx = (
+            start_idx
+            + fourierparameters["track_seconds_considered"]
+            * fourierparameters["sample_rate"]
+        )
+
+        signal = signal[start_idx:end_idx]
+
         # STFT -> spectrogram
         hop_length = fourierparameters["hop_length"]  # in num. of samples
         n_fft = fourierparameters["n_fft"]  # window in num. of samples

@@ -1,6 +1,7 @@
 {
   "n_fft": 4096,
-  "n_mels": 512,
-  "hop_length": 512,
-  "sample_rate": 44100
+  "n_mels": 256,
+  "hop_length": 128,
+  "sample_rate": 44100,
+  "track_seconds_considered": 20
 }

@@ -17,7 +17,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 with open("../../config/fourierparameters.json") as fourierparameters_file:
     fourierparameters = json.load(fourierparameters_file)
 
-    INPUT_FILE_PATH = "audio/MusicDelta_80sRock/MusicDelta_80sRock_MIX.wav"
+INPUT_FILE_PATH = "audio/MusicDelta_80sRock/Bass/MusicDelta_80sRock_STEM_02.wav"
 
 
 def fourier_audio_loss(file_path):

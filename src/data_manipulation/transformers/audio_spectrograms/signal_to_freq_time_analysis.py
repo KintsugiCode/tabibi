@@ -35,7 +35,7 @@ def transform_mix_and_bass_to_spectrogram(
     """
 
     data_point_amount = 0
-    dim_for_padding = []
+    dim = []
 
     # Iterates over all folders in base_path and checks if the folder is included in the files_to_transform list.
     # If yes, transforms the mix wav file and the bass wav file into spectrograms.
@@ -87,7 +87,7 @@ def transform_mix_and_bass_to_spectrogram(
                     t_dict["mix_name"].append(mix_file_name)
 
                     # Track the dimensions for later padding
-                    dim_for_padding.append(mix_spectrogram.shape[1])
+                    dim.append(mix_spectrogram.shape[1])
 
                     # delete variables after use to free up memory
                     del mix_spectrogram
@@ -95,18 +95,10 @@ def transform_mix_and_bass_to_spectrogram(
                     del mix_file_name
 
                     data_point_amount += 1
-        """
-                if data_point_amount == 1:
-                    break
-            if data_point_amount == 1:
-                break
-        if data_point_amount == 1:
-            break
-        """
 
     try:
         # Save min_dimension to later truncate the dataset again after min_dimension of comparable datasets is known
-        min_dimension = min(dim_for_padding)
+        min_dimension = min(dim)
     except Exception as e:
         raise Exception(
             "The dataset is missing data. E.g. the provided mixes have no accompanying bass tracks.".format(
