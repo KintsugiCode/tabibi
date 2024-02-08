@@ -3,75 +3,39 @@ import torch.nn as nn
 import json
 import os
 from src.__helpers__.__utils__ import load_numpy_data
-from src.data_manipulation.data_splitter.train_test_split import (
-    train_test_splitter,
+from src.__helpers__.constants import (
+    TRAIN_FOLDER_PATH,
+    TRAIN_FILE_NAME,
+    TEST_FOLDER_PATH,
+    TEST_FILE_NAME,
+    VISUALIZATION_SAVE_PATH,
+    TRAINED_AUDIO_FILE_PATH,
+    TRAINED_MODEL_SAVE_PATH,
+    PRED_AUDIO_FILE_PATH,
 )
-from src.data_manipulation.transformers.audio_spectrograms.signal_to_freq_time_analysis import (
-    transform_mix_and_bass_to_spectrogram,
-)
+from src.data_manipulation.transformers.transform_data import transform_data
 from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
     data_overall_truncator,
 )
+from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
+from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
 from src.models.audio_separation.gru.gru import GRU
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
-from src.visualization.freq_time_analysis_transformed.visualize_mag_spectrograms import (
+from src.visualization.spectrograms_visualized.visualize_mag_spectrograms import (
     visualize_spectrograms,
 )
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 hyperparameters_path = os.path.join(dir_path, "./config/hyperparameters_audio.json")
 
-
 with open(hyperparameters_path) as hyperparameters_file:
     hyperparameters = json.load(hyperparameters_file)
 
 
-# relative paths to dataset as seen from this main.py file
-subset = "V1&V2"
-BASE_PATH = f"{dir_path}/data/raw/{subset}"
-
-TRAIN_FOLDER_PATH = f"{dir_path}/data/processed/train"
-TRAIN_FILE_NAME = f"mix_bass_train_data_{subset}TRAIN"
-
-TEST_FOLDER_PATH = f"{dir_path}/data/processed/test"
-TEST_FILE_NAME = f"mix_bass_test_data_{subset}TEST"
-
-
-TRAIN_FILE_PATH = f"{TRAIN_FOLDER_PATH}/normalized_{TRAIN_FILE_NAME}.npz"
-TEST_FILE_PATH = f"{TEST_FOLDER_PATH}/normalized_{TEST_FILE_NAME}.npz"
-
-TRAINED_AUDIO_FILE_PATH = f"{dir_path}/visualization/trained_audio"
-PRED_AUDIO_FILE_PATH = f"{dir_path}/visualization/predicted_audio"
-
-VISUALIZATION_SAVE_PATH = (
-    f"{dir_path}/visualization/freq_time_analysis_transformed/spectrograms_visualized"
-)
-
-TRAINED_MODEL_SAVE_PATH = f"{dir_path}/models/trained_models/"
-
-
 def main():
-    # Uncomment to transform training/testing data if data dictionary not yet created
     """
-    # Split data into train/test
-    print("@@@@@@ Splitting data into train/test @@@@@@")
-    train_files, test_files = train_test_splitter(BASE_PATH)
-
-    # Transform training data and receive max_dimension
-    print("@@@@@@ Transforming training data @@@@@@")
-
-    transform_mix_and_bass_to_spectrogram(
-        base_path=BASE_PATH,
-        files_to_transform=train_files,
-        save_file_path=TRAIN_FILE_PATH,
-    )
-    # Transform testing data and receive max_dimension
-    print("@@@@@@ Transforming testing data @@@@@@")
-    transform_mix_and_bass_to_spectrogram(
-        base_path=BASE_PATH,
-        files_to_transform=test_files,
-        save_file_path=TEST_FILE_PATH,
-    )
+    # Uncomment to transform training/testing data if data dictionary not yet created
+    transform_data()
     """
 
     # Load the training dataset
@@ -120,16 +84,7 @@ def main():
     prev_loss = float("inf")
 
     # Track learning rate reduction
-    lr_reduced_a = False
-    lr_reduced_b = False
-    lr_reduced_c = False
-    lr_reduced_d = False
-    lr_reduced_e = False
-    lr_reduced_f = False
-    lr_reduced_g = False
-    lr_reduced_h = False
-    lr_reduced_i = False
-    lr_reduced_j = False
+    lr_reduced = [False] * 10
 
     # Train the model with the training data
     print("@@@@@@ Starting model training @@@@@@")
@@ -161,123 +116,16 @@ def main():
         # print statistics
         print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@@@@@")
 
-        # Reduce learning rate once when loss is lower
-        if loss.item() < 0.00025 and not lr_reduced_a:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_a = True
-        # Reduce learning rate once when loss is lower
-        if loss.item() < 0.0002 and not lr_reduced_b:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_b = True
-        if loss.item() < 0.00015 and not lr_reduced_c:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_c = True
-        if loss.item() < 0.00013 and not lr_reduced_d:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_d = True
-        if loss.item() < 0.00011 and not lr_reduced_e:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_e = True
-        if loss.item() < 0.00009 and not lr_reduced_f:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_f = True
-        if loss.item() < 0.000075 and not lr_reduced_g:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_g = True
-        if loss.item() < 0.00005 and not lr_reduced_h:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_h = True
-        if loss.item() < 0.000035 and not lr_reduced_i:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_i = True
-        if loss.item() < 0.000025 and not lr_reduced_j:
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
-            for g in optimizer.param_groups:
-                g["lr"] = g["lr"] / 2
-            lr_reduced_j = True
+        # Reduce learning rate if necessary
+        lr_reduced, optimizer = learning_rate_reducer(loss, optimizer, lr_reduced)
 
         # Visualizations and audio-transforms for manual evaluation
         if epoch == hyperparameters["n_epochs"] - 1:
-            # Convert tensor back into numpy array and then back to audio
-            outputs_for_visualization = outputs.detach().cpu().numpy()
-            # Convert first three tracks back to audio for review
-            x_train_for_visualization = x_train.detach().cpu().numpy()
-            y_train_for_visualization = y_train.detach().cpu().numpy()
-            visualize_spectrograms(
-                VISUALIZATION_SAVE_PATH,
-                x_train_for_visualization[0],
-                y_train_for_visualization[0],
-                outputs_for_visualization[0],
-                data_train["mix_name"],
-            )
-            freq_time_analysis_to_audio(
-                outputs_for_visualization[:3],
-                data_train["y_phase"],
-                TRAINED_AUDIO_FILE_PATH,
-                data_train["mix_name"],
-                data_train["min_max_amplitudes"],
-                flag="TRAINING",
+            visualize_for_evaluation(
+                outputs, x_train, y_train, data_train, flag="TRAINING"
             )
 
-        # Check if loss is not changing
+        # Check if loss is not changing anymore
         if abs(prev_loss - loss.item()) < 1e-8:  # small threshold to count as no change
             no_change += 1
         else:
@@ -285,34 +133,17 @@ def main():
 
         prev_loss = loss.item()
 
+        # If loss hasn't changed for 30 epochs, stop early
         if no_change >= 30:
-            print("@@@@@@ Stopping early - loss hasn't changed in 20 epochs. @@@@@@ ")
-            # Convert tensor back into numpy array and then back to audio
-            outputs_for_visualization = outputs.detach().cpu().numpy()
-            # Convert first three tracks back to audio for review
-            x_train_for_visualization = x_train.detach().cpu().numpy()
-            y_train_for_visualization = y_train.detach().cpu().numpy()
-            visualize_spectrograms(
-                VISUALIZATION_SAVE_PATH,
-                x_train_for_visualization[0],
-                y_train_for_visualization[0],
-                outputs_for_visualization[0],
-                data_train["mix_name"],
-            )
-            freq_time_analysis_to_audio(
-                outputs_for_visualization[:3],
-                data_train["y_phase"],
-                TRAINED_AUDIO_FILE_PATH,
-                data_train["mix_name"],
-                data_train["min_max_amplitudes"],
-                flag="TRAINING",
+            print("@@@@@@ Stopping early - loss hasn't changed in 30 epochs. @@@@@@ ")
+            visualize_for_evaluation(
+                outputs, x_train, y_train, data_train, flag="TRAINING"
             )
             break
 
-    """
     # Save the trained model
+    print("@@@@@@ Saving trained model @@@@@@")
     torch.save(model.state_dict(), TRAINED_MODEL_SAVE_PATH)
-    """
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
     print("@@@@@@ Converting to PyTorch Tensor @@@@@@")

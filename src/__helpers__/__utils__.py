@@ -29,7 +29,6 @@ def convert_t_dict_key_to_numpy_arrays(dictionary, keys):
 
 
 def convert_to_recarray(data_dict):
-    return np.rec.array(
-        [(k, v) for k, v in data_dict.items()],
-        dtype=[("key", object), ("value", object)],
-    )
+    recarray_data = list(data_dict.items())
+    dtype = [("key", object), ("value", object)]
+    return np.rec.array(recarray_data, dtype=dtype)
