@@ -22,7 +22,6 @@ def visualize_spectrograms(
     mel_spectrogram_y_train_output,
     mix_name,
 ):
-    frame_times = librosa.frames_to_time(np.arange(mel_spectrogram_x_train.shape[1]))
     sr = fourierparameters["sample_rate"]
     hop_length = fourierparameters["hop_length"]
 
@@ -30,10 +29,10 @@ def visualize_spectrograms(
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
         librosa.power_to_db(mel_spectrogram_x_train, ref=np.max),
-        x_coords=frame_times,
         y_axis="mel",
         fmax=8000,
         x_axis="time",
+        sr=fourierparameters["sample_rate"],
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - x_train - {mix_name[0]}")
@@ -45,10 +44,10 @@ def visualize_spectrograms(
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
         librosa.power_to_db(mel_spectrogram_y_train, ref=np.max),
-        x_coords=frame_times,
         y_axis="mel",
         fmax=8000,
         x_axis="time",
+        sr=fourierparameters["sample_rate"],
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]}")
@@ -60,10 +59,10 @@ def visualize_spectrograms(
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
         librosa.power_to_db(mel_spectrogram_y_train_output, ref=np.max),
-        x_coords=frame_times,
         y_axis="mel",
         fmax=8000,
         x_axis="time",
+        sr=fourierparameters["sample_rate"],
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]}")

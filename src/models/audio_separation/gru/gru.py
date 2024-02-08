@@ -22,9 +22,9 @@ class GRU(nn.Module):  # Changed class name to GRU
         self.dropout = nn.Dropout(dropout_rate)
 
         # Readout layers - Increased capacity with the addition of another fully connected layer
-        self.fc1 = nn.Linear(hidden_dim, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        self.fc3 = nn.Linear(hidden_dim, output_size)
+        self.fc1 = nn.Linear(hidden_dim, hidden_dim * 2)
+        self.fc2 = nn.Linear(hidden_dim * 2, hidden_dim * 4)
+        self.fc3 = nn.Linear(hidden_dim * 4, output_size)
 
     def forward(self, x):
         batch_size = x.size(0)

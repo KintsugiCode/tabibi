@@ -1,3 +1,5 @@
+import math
+
 import librosa
 import numpy as np
 import soundfile as sf
@@ -53,8 +55,22 @@ def freq_time_analysis_to_audio(
                 power=1.0,
             )
 
+            # Rounded-up sample length of track from audio to freq-time analysis conversion
+            length = math.ceil(
+                (
+                    fourierparameters["sample_rate"]
+                    * fourierparameters["track_seconds_considered"]
+                )
+                / fourierparameters["hop_length"]
+            )
+
             # inverts stft whilst estimating phase -- is much clearer than librosa.istft
-            audio = librosa.griffinlim(spectrogram_array[track])
+            audio = librosa.griffinlim(
+                spectrogram_array[track],
+                hop_length=fourierparameters["hop_length"],
+                win_length=fourierparameters["n_fft"],
+                n_fft=fourierparameters["n_fft"],
+            )
 
             audio = lowpass_filter(
                 audio, cutoff=1500, sr=fourierparameters["sample_rate"]

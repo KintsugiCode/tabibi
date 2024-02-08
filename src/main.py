@@ -27,11 +27,11 @@ with open(hyperparameters_path) as hyperparameters_file:
 
 
 # relative paths to dataset as seen from this main.py file
-subset = "V2"
+subset = "V1&V2"
 BASE_PATH = f"{dir_path}/data/raw/{subset}"
 
 TRAIN_FOLDER_PATH = f"{dir_path}/data/processed/train"
-TRAIN_FILE_NAME = f"mix_bass_train_data_{subset}TEST"
+TRAIN_FILE_NAME = f"mix_bass_train_data_{subset}TRAIN"
 
 TEST_FOLDER_PATH = f"{dir_path}/data/processed/test"
 TEST_FILE_NAME = f"mix_bass_test_data_{subset}TEST"
@@ -47,8 +47,12 @@ VISUALIZATION_SAVE_PATH = (
     f"{dir_path}/visualization/freq_time_analysis_transformed/spectrograms_visualized"
 )
 
+TRAINED_MODEL_SAVE_PATH = f"{dir_path}/models/trained_models/"
+
 
 def main():
+    # Uncomment to transform training/testing data if data dictionary not yet created
+    """
     # Split data into train/test
     print("@@@@@@ Splitting data into train/test @@@@@@")
     train_files, test_files = train_test_splitter(BASE_PATH)
@@ -68,6 +72,7 @@ def main():
         files_to_transform=test_files,
         save_file_path=TEST_FILE_PATH,
     )
+    """
 
     # Load the training dataset
     print("@@@@@@ Loading the training dataset @@@@@@")
@@ -107,7 +112,7 @@ def main():
     # Choose a loss function and an optimizer
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=3e-6
+        model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=1e-6
     )
 
     # Track loss to break training loop if loss is no longer changing
@@ -115,8 +120,16 @@ def main():
     prev_loss = float("inf")
 
     # Track learning rate reduction
-    lr_reduced_roughgrain = False
-    lr_reduced_finegrain = False
+    lr_reduced_a = False
+    lr_reduced_b = False
+    lr_reduced_c = False
+    lr_reduced_d = False
+    lr_reduced_e = False
+    lr_reduced_f = False
+    lr_reduced_g = False
+    lr_reduced_h = False
+    lr_reduced_i = False
+    lr_reduced_j = False
 
     # Train the model with the training data
     print("@@@@@@ Starting model training @@@@@@")
@@ -149,7 +162,7 @@ def main():
         print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@@@@@")
 
         # Reduce learning rate once when loss is lower
-        if loss.item() < 0.00014 and not lr_reduced_roughgrain:
+        if loss.item() < 0.00025 and not lr_reduced_a:
             print("@@@@@@@@@@")
             print("@@@@@@@@@@")
             print("@@@@@@ Cutting learning_rate in half @@@@@@")
@@ -157,9 +170,9 @@ def main():
             print("@@@@@@@@@@")
             for g in optimizer.param_groups:
                 g["lr"] = g["lr"] / 2
-            lr_reduced_roughgrain = True
+            lr_reduced_a = True
         # Reduce learning rate once when loss is lower
-        if loss.item() < 0.00008 and not lr_reduced_finegrain:
+        if loss.item() < 0.0002 and not lr_reduced_b:
             print("@@@@@@@@@@")
             print("@@@@@@@@@@")
             print("@@@@@@ Cutting learning_rate in half @@@@@@")
@@ -167,7 +180,79 @@ def main():
             print("@@@@@@@@@@")
             for g in optimizer.param_groups:
                 g["lr"] = g["lr"] / 2
-            lr_reduced_finegrain = True
+            lr_reduced_b = True
+        if loss.item() < 0.00015 and not lr_reduced_c:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_c = True
+        if loss.item() < 0.00013 and not lr_reduced_d:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_d = True
+        if loss.item() < 0.00011 and not lr_reduced_e:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_e = True
+        if loss.item() < 0.00009 and not lr_reduced_f:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_f = True
+        if loss.item() < 0.000075 and not lr_reduced_g:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_g = True
+        if loss.item() < 0.00005 and not lr_reduced_h:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_h = True
+        if loss.item() < 0.000035 and not lr_reduced_i:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_i = True
+        if loss.item() < 0.000025 and not lr_reduced_j:
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@ Cutting learning_rate in half @@@@@@")
+            print("@@@@@@@@@@")
+            print("@@@@@@@@@@")
+            for g in optimizer.param_groups:
+                g["lr"] = g["lr"] / 2
+            lr_reduced_j = True
 
         # Visualizations and audio-transforms for manual evaluation
         if epoch == hyperparameters["n_epochs"] - 1:
@@ -223,6 +308,11 @@ def main():
                 flag="TRAINING",
             )
             break
+
+    """
+    # Save the trained model
+    torch.save(model.state_dict(), TRAINED_MODEL_SAVE_PATH)
+    """
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
     print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
