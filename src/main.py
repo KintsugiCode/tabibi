@@ -4,14 +4,12 @@ import json
 import os
 from src.__helpers__.__utils__ import load_numpy_data
 from src.__helpers__.constants import (
-    TRAIN_FOLDER_PATH,
-    TRAIN_FILE_NAME,
-    TEST_FOLDER_PATH,
-    TEST_FILE_NAME,
-    VISUALIZATION_SAVE_PATH,
-    TRAINED_AUDIO_FILE_PATH,
     TRAINED_MODEL_SAVE_PATH,
     PRED_AUDIO_FILE_PATH,
+    MODEL1_TRAIN_FOLDER_PATH,
+    MODEL1_TRAIN_FILE_NAME,
+    MODEL1_TEST_FOLDER_PATH,
+    MODEL1_TEST_FILE_NAME,
 )
 from src.data_manipulation.transformers.transform_data import transform_data
 from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
@@ -21,9 +19,6 @@ from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
 from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
 from src.models.audio_separation.gru.gru import GRU
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
-from src.visualization.spectrograms_visualized.visualize_mag_spectrograms import (
-    visualize_spectrograms,
-)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 hyperparameters_path = os.path.join(dir_path, "./config/hyperparameters_audio.json")
@@ -33,20 +28,20 @@ with open(hyperparameters_path) as hyperparameters_file:
 
 
 def main():
-    """
     # Uncomment to transform training/testing data if data dictionary not yet created
-    transform_data()
-    """
+    transform_data(flag="audio separation")
 
     # Load the training dataset
     print("@@@@@@ Loading the training dataset @@@@@@")
     data_train = load_numpy_data(
-        f"{TRAIN_FOLDER_PATH}/normalized_{TRAIN_FILE_NAME}.npz"
+        f"{MODEL1_TRAIN_FOLDER_PATH}/normalized_{MODEL1_TRAIN_FILE_NAME}.npz"
     )
 
     # Load the testing dataset
     print("@@@@@@ Loading the testing dataset @@@@@@")
-    data_test = load_numpy_data(f"{TEST_FOLDER_PATH}/normalized_{TEST_FILE_NAME}.npz")
+    data_test = load_numpy_data(
+        f"{MODEL1_TEST_FOLDER_PATH}/normalized_{MODEL1_TEST_FILE_NAME}.npz"
+    )
 
     # Truncate the training dataset to the smallest dimension
     data_train = data_overall_truncator(
