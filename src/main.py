@@ -28,7 +28,8 @@ with open(hyperparameters_path) as hyperparameters_file:
 
 
 def main():
-    # Transform training/testing data
+    # Part 1
+    # Transform training/testing data for audio separation
     transform_data(flag="audio separation")
 
     # Load the training dataset
@@ -100,6 +101,10 @@ def main():
         data_test["min_max_amplitudes"],
         flag="TESTING",
     )
+
+    # Part 2
+    # Transform training/testing data for tab transcription
+    transform_data(flag="tab transcription")
 
 
 if __name__ == "__main__":

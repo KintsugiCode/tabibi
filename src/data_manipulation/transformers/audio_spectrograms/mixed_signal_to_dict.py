@@ -99,11 +99,6 @@ def transform_audio_to_spectrogram(base_path, files_to_transform, save_file_path
                         break
                 if data_point_amount == 1:
                     break
-        elif flag == "tab transcription":
-            """
-            Only needed for testing and design, as the input spectrograms for the second model will be passed in from the outputs of the first, and therefore won't need this separate transformation step once model 1 is complete.
-            """
-            # INSERT TRANSORMER CODE FOR SPECTROGRAMS OF SECOND MODEL here
     except Exception as e:
         raise Exception(
             "Invalid flag passed to signal_to_freq_time_analysis function.".format(e)
