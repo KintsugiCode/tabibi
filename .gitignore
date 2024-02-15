@@ -4,10 +4,17 @@
 src/data/*
 src/transformers/__tests__/test_data/*
 
+# Models
+
+src/models/trained_models/*
+
+
 # Visualized Output
 
 src/visualization/predicted_audio/*
+src/visualization/trained_audio/*
 src/visualization/fourier_and_back_trial/audio/*
+src/visualization/spectrograms_visualized/outputs/*
 
 # Distribution / packaging
 .Python
