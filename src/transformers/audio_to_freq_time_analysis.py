@@ -21,7 +21,7 @@ def audio_to_freq_time_analysis(file_path, flag=False):
             file_path, sr=fourierparameters["sample_rate"], mono=True
         )
 
-        # determine the indices for the middle 10 seconds
+        # determine the indices for the middle n seconds
         start_idx = int(
             (
                 len(signal) / fourierparameters["sample_rate"]

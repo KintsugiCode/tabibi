@@ -14,7 +14,7 @@ from src.data_manipulation.transformers.truncating.mix_bass_data_truncator impor
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
 
 
-def transform_audio_to_spectrogram(base_path, files_to_transform, save_file_path, flag):
+def mixed_signal_to_dict(base_path, files_to_transform, save_file_path):
     t_dict = {
         "x": list(),
         "y": list(),
@@ -31,78 +31,73 @@ def transform_audio_to_spectrogram(base_path, files_to_transform, save_file_path
 
     data_point_amount = 0
     dim = []
-    try:
-        if flag == "audio separation":
-            """
-            # Iterates over all folders in base_path and checks if the folder is included in the files_to_transform list.
-            # If yes, transforms the mix wav file and the bass wav file into spectrograms.
-            """
-            for foldername in os.listdir(f"{base_path}"):
-                if foldername in files_to_transform:
-                    for mix_file_name in os.listdir(f"{base_path}/{foldername}/"):
-                        if mix_file_name.endswith(".wav"):
-                            print(f"@@ data_point: {mix_file_name} @@ ")
 
-                            mix_folder_path = f"{base_path}/{foldername}"
-                            mix_file_path = f"{mix_folder_path}/{mix_file_name}"
+    """
+    # Iterates over all folders in base_path and checks if the folder is included in the files_to_transform list.
+    # If yes, transforms the mix wav file and the bass wav file into spectrograms.
+    """
+    for foldername in os.listdir(f"{base_path}"):
+        if foldername in files_to_transform:
+            for mix_file_name in os.listdir(f"{base_path}/{foldername}/"):
+                if mix_file_name.endswith(".wav"):
+                    print(f"@@ data_point: {mix_file_name} @@ ")
 
-                            print(mix_file_name)
+                    mix_folder_path = f"{base_path}/{foldername}"
+                    mix_file_path = f"{mix_folder_path}/{mix_file_name}"
 
-                            bass_folder_path = f"{mix_folder_path}/Bass"
-                            bass_file_name = get_one_file_with_extension(
-                                directory_path=bass_folder_path, extension="wav"
-                            )
-                            print(bass_file_name)
-                            # Ignore all mix files where matching bass file is missing
-                            if bass_file_name is None:
-                                print("@@ SKIPPED -- Bass track not available @@")
-                                print()
-                                break
+                    print(mix_file_name)
 
-                            print()
-
-                            """
-                            # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
-                            if data_point_amount == (data_point_multitude * 10):
-                                print("Waiting for 10 seconds")
-                                data_point_multitude += 1
-                                time.sleep(10)
-                            """
-
-                            bass_file_path = f"{bass_folder_path}/{bass_file_name}"
-
-                            mix_spectrogram, mix_phase = audio_to_freq_time_analysis(
-                                file_path=mix_file_path
-                            )
-                            bass_spectrogram, bass_phase = audio_to_freq_time_analysis(
-                                file_path=bass_file_path, flag=True
-                            )
-
-                            t_dict["x"].append(mix_spectrogram)
-                            t_dict["y"].append(bass_spectrogram)
-                            t_dict["x_phase"].append(mix_phase)
-                            t_dict["y_phase"].append(bass_phase)
-                            t_dict["mix_name"].append(mix_file_name)
-
-                            # Track the dimensions for later padding
-                            dim.append(mix_spectrogram.shape[1])
-
-                            # delete variables after use to free up memory
-                            del mix_spectrogram
-                            del bass_spectrogram
-                            del mix_file_name
-
-                            data_point_amount += 1
-                        if data_point_amount == 1:
-                            break
-                    if data_point_amount == 1:
+                    bass_folder_path = f"{mix_folder_path}/Bass"
+                    bass_file_name = get_one_file_with_extension(
+                        directory_path=bass_folder_path, extension="wav"
+                    )
+                    print(bass_file_name)
+                    # Ignore all mix files where matching bass file is missing
+                    if bass_file_name is None:
+                        print("@@ SKIPPED -- Bass track not available @@")
+                        print()
                         break
+
+                    print()
+
+                    """
+                    # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
+                    if data_point_amount == (data_point_multitude * 10):
+                        print("Waiting for 10 seconds")
+                        data_point_multitude += 1
+                        time.sleep(10)
+                    """
+
+                    bass_file_path = f"{bass_folder_path}/{bass_file_name}"
+
+                    mix_spectrogram, mix_phase = audio_to_freq_time_analysis(
+                        file_path=mix_file_path
+                    )
+                    bass_spectrogram, bass_phase = audio_to_freq_time_analysis(
+                        file_path=bass_file_path, flag=True
+                    )
+
+                    t_dict["x"].append(mix_spectrogram)
+                    t_dict["y"].append(bass_spectrogram)
+                    t_dict["x_phase"].append(mix_phase)
+                    t_dict["y_phase"].append(bass_phase)
+                    t_dict["mix_name"].append(mix_file_name)
+
+                    # Track the dimensions for later padding
+                    dim.append(mix_spectrogram.shape[1])
+
+                    # delete variables after use to free up memory
+                    del mix_spectrogram
+                    del bass_spectrogram
+                    del mix_file_name
+
+                    data_point_amount += 1
                 if data_point_amount == 1:
                     break
-    except Exception as e:
-        raise Exception(
-            "Invalid flag passed to signal_to_freq_time_analysis function.".format(e)
-        )
+            if data_point_amount == 1:
+                break
+        if data_point_amount == 1:
+            break
 
     try:
         # Save min_dimension to later truncate the dataset again after overall min_dimension of datasets is known

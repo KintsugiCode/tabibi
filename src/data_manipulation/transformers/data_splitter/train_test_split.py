@@ -6,7 +6,7 @@ def train_test_splitter(base_path):
     all_file_names = []
     for foldername in os.listdir(f"{base_path}"):
         for mix_file_name in os.listdir(f"{base_path}/{foldername}/"):
-            if mix_file_name.endswith(".wav"):
+            if mix_file_name.endswith(".wav") or mix_file_name.endswith(".flac"):
                 all_file_names.append(foldername)
 
     # Split into train and test
