@@ -32,7 +32,8 @@ def visualize_spectrograms(
         y_axis="mel",
         fmax=8000,
         x_axis="time",
-        sr=fourierparameters["sample_rate"],
+        sr=sr,
+        hop_length=hop_length,
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - x_train - {mix_name[0]}")
@@ -47,7 +48,8 @@ def visualize_spectrograms(
         y_axis="mel",
         fmax=8000,
         x_axis="time",
-        sr=fourierparameters["sample_rate"],
+        sr=sr,
+        hop_length=hop_length,
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]}")
@@ -62,7 +64,8 @@ def visualize_spectrograms(
         y_axis="mel",
         fmax=8000,
         x_axis="time",
-        sr=fourierparameters["sample_rate"],
+        sr=sr,
+        hop_length=hop_length,
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]}")

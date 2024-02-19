@@ -10,7 +10,7 @@ from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer i
     Normalizer,
 )
 from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
-    data_initial_truncator,
+    data_truncator,
 )
 from src.transformers.__helpers__.resize_piano_roll import resize_piano_roll
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
@@ -88,7 +88,7 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path):
         )
 
     # Padding and masking preparation
-    t_dict = data_initial_truncator(data=t_dict, min_dimension=min_dimension)
+    t_dict = data_truncator(data=t_dict, min_dimension=min_dimension, flag="initial")
     t_dict["min_dimension"] = min_dimension
 
     # Transform to recarray

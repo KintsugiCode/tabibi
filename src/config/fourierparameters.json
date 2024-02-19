@@ -1,5 +1,5 @@
 {
-  "n_fft": 4096,
+  "n_fft": 2048,
   "n_mels": 128,
   "hop_length": 128,
   "sample_rate": 44100,
