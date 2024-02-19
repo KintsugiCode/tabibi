@@ -1,11 +1,11 @@
 # Model 1 Constants - relative paths to datasets as seen from the main.py file
 MODEL1_SUBSET = "V2"
-MODEL1_BASE_PATH = f"../data/raw/model1/{MODEL1_SUBSET}"
+MODEL1_BASE_PATH = f"../../data/raw/model1/{MODEL1_SUBSET}"
 
-MODEL1_TRAIN_FOLDER_PATH = "../data/processed/train/model1"
+MODEL1_TRAIN_FOLDER_PATH = "../../data/processed/train/model1"
 MODEL1_TRAIN_FILE_NAME = f"mix_bass_train_data_{MODEL1_SUBSET}-TRAIN"
 
-MODEL1_TEST_FOLDER_PATH = "../data/processed/test/model1"
+MODEL1_TEST_FOLDER_PATH = "../../data/processed/test/model1"
 MODEL1_TEST_FILE_NAME = f"mix_bass_test_data_{MODEL1_SUBSET}-TEST"
 
 
@@ -18,13 +18,13 @@ MODEL1_TEST_FILE_PATH = (
 
 
 # Model 2 Constants - relative paths to datasets as seen from the main.py file
-MODEL2_SUBSET = ""
-MODEL2_BASE_PATH = f"../data/raw/model2/{MODEL2_SUBSET}"
+MODEL2_SUBSET = "combined"
+MODEL2_BASE_PATH = f"../../data/raw/model2/{MODEL2_SUBSET}"
 
-MODEL2_TRAIN_FOLDER_PATH = "../data/processed/train/model2"
+MODEL2_TRAIN_FOLDER_PATH = "../../data/processed/train/model2"
 MODEL2_TRAIN_FILE_NAME = f"mix_bass_train_data_{MODEL2_SUBSET}-TRAIN"
 
-MODEL2_TEST_FOLDER_PATH = "../data/processed/test/model2"
+MODEL2_TEST_FOLDER_PATH = "../../data/processed/test/model2"
 MODEL2_TEST_FILE_NAME = f"mix_bass_test_data_{MODEL2_SUBSET}-TEST"
 
 

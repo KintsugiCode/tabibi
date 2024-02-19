@@ -15,9 +15,9 @@ from src.data_manipulation.transformers.transform_data import transform_data
 from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
     data_overall_truncator,
 )
-from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
-from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
 from src.models.audio_separation.gru.gru import GRU
+from src.models.audio_separation.test_separation import test_separation
+from src.models.audio_separation.train_separation import train_separation
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -28,7 +28,8 @@ with open(hyperparameters_path) as hyperparameters_file:
 
 
 def main():
-    # Uncomment to transform training/testing data if data dictionary not yet created
+    # Part 1
+    # Transform training/testing data for audio separation
     transform_data(flag="audio separation")
 
     # Load the training dataset
@@ -53,6 +54,7 @@ def main():
         data_test, data_train["min_dimension"], data_test["min_dimension"]
     )
 
+    # Begin training
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
     print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
     x_train = torch.stack([torch.tensor(x) for x in data_train["x"]])
@@ -74,90 +76,22 @@ def main():
         model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=1e-6
     )
 
-    # Track loss to break training loop if loss is no longer changing
-    no_change = 0
-    prev_loss = float("inf")
-
-    # Track learning rate reduction
-    lr_reduced = [False] * 10
-
-    # Train the model with the training data
-    print("@@@@@@ Starting model training @@@@@@")
-    for epoch in range(
-        hyperparameters["n_epochs"]
-    ):  # loop over the dataset multiple times
-        print(f"@@@@@@ Starting Epoch {epoch + 1} @@@@@@")
-
-        # zero the parameter gradients
-        optimizer.zero_grad()
-
-        """
-        Forward pass through the model to generate the output predictions and then
-        calculate the loss between the model's predictions (outputs), and the actual target values (y_train)
-
-        """
-
-        outputs, _ = model(
-            x_train,
-        )
-
-        loss = criterion(outputs, y_train)
-
-        # Backward pass (backpropagation) where gradients are calculated
-        loss.backward()
-        # Update model parameters, based on the gradients calculated in the backward pass
-        optimizer.step()
-
-        # print statistics
-        print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@@@@@")
-
-        # Reduce learning rate if necessary
-        lr_reduced, optimizer = learning_rate_reducer(loss, optimizer, lr_reduced)
-
-        # Visualizations and audio-transforms for manual evaluation
-        if epoch == hyperparameters["n_epochs"] - 1:
-            visualize_for_evaluation(
-                outputs, x_train, y_train, data_train, flag="TRAINING"
-            )
-
-        # Check if loss is not changing anymore
-        if abs(prev_loss - loss.item()) < 1e-8:  # small threshold to count as no change
-            no_change += 1
-        else:
-            no_change = 0
-
-        prev_loss = loss.item()
-
-        # If loss hasn't changed for 30 epochs, stop early
-        if no_change >= 30:
-            print("@@@@@@ Stopping early - loss hasn't changed in 30 epochs. @@@@@@ ")
-            visualize_for_evaluation(
-                outputs, x_train, y_train, data_train, flag="TRAINING"
-            )
-            break
+    # Train the model
+    model = train_separation(x_train, y_train, model, criterion, optimizer, data_train)
 
     # Save the trained model
     print("@@@@@@ Saving trained model @@@@@@")
     torch.save(model.state_dict(), TRAINED_MODEL_SAVE_PATH)
 
+    # Begin testing
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
     print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
     x_test = torch.stack([torch.tensor(x) for x in data_test["x"]])
     y_test = torch.stack([torch.tensor(y) for y in data_test["y"]])
 
     # Test the model
-    print("@@@@@@ Starting model testing @@@@@@")
-    # Switch the model to evaluation mode to turn off features like dropout
-    model.eval()
+    y_pred = test_separation(x_test, y_test, model, criterion)
 
-    # Pass x_test through the model to get y_pred
-    y_pred, _ = model(x_test)
-
-    test_loss = criterion(y_pred, y_test)
-    print(f"Test loss: {test_loss.item():.7f}")
-
-    # Convert tensor back into numpy array and then back to audio
-    y_pred = y_pred.detach().cpu().numpy()
     # Convert first three tracks back to audio for review
     freq_time_analysis_to_audio(
         y_pred[:3],
@@ -167,6 +101,10 @@ def main():
         data_test["min_max_amplitudes"],
         flag="TESTING",
     )
+
+    # Part 2
+    # Transform training/testing data for tab transcription
+    transform_data(flag="tab transcription")
 
 
 if __name__ == "__main__":
