@@ -1,7 +1,7 @@
 import os
+import time
 
 from src.__helpers__.__utils__ import (
-    get_one_file_with_extension,
     convert_t_dict_key_to_numpy_arrays,
     convert_to_recarray,
     savez_numpy_data,
@@ -9,7 +9,7 @@ from src.__helpers__.__utils__ import (
 from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
-from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
+from src.data_manipulation.transformers.truncator.mix_bass_data_truncator import (
     data_truncator,
 )
 from src.transformers.__helpers__.resize_piano_roll import resize_piano_roll
@@ -17,7 +17,7 @@ from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_anal
 from src.transformers.midi_to_piano_roll import midi_to_piano_roll
 
 
-def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path):
+def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=False):
     t_dict = {
         "x": list(),
         "y": list(),
@@ -27,10 +27,8 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path):
         "min_dimension": 0,
     }
 
-    """
-    # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
-    data_point_multitude = 1
-    """
+    if pause == True:
+        data_point_multitude = 1
 
     data_point_amount = 0
     dim = []
@@ -66,14 +64,14 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path):
             del resized_piano_roll
             del file_name
 
-            """
-              # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
-              if data_point_amount == (data_point_multitude * 10):
-                  print("Waiting for 10 seconds")
-                  data_point_multitude += 1
-                  time.sleep(10)
-            """
+            if pause == True:
+                if data_point_amount == (data_point_multitude * 10):
+                    print("Waiting for 10 seconds")
+                    data_point_multitude += 1
+                    time.sleep(10)
+
             data_point_amount += 1
+
         if data_point_amount == 5:
             break
 
@@ -91,17 +89,14 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path):
     t_dict = data_truncator(data=t_dict, min_dimension=min_dimension, flag="initial")
     t_dict["min_dimension"] = min_dimension
 
-    # Transform to recarray
+    # Transform to array
     t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
-
-    """
-    # Save un-normalized data
-    savez_numpy_data(file_path=save_file_path, data=t_dict_recarray)
-    """
 
     # Normalize the bass spectrograms
     norm_x = Normalizer(t_dict["x"])
     t_dict["x"], t_dict["min_max_amplitudes"] = norm_x.normalize(), norm_x.get_min_max()
+
+    # Transform to recarray
     t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
     # Save normalized data

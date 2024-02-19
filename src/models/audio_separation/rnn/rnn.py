@@ -24,7 +24,7 @@ class RNN(nn.Module):
         # Dropout layer
         self.dropout = nn.Dropout(dropout_rate)
 
-        # Readout layers - Increased capacity with the addition of another fully connected layer
+        # Readout layers
         self.fc1 = nn.Linear(hidden_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
         self.fc3 = nn.Linear(hidden_dim, output_size)

@@ -1,4 +1,6 @@
 import os
+import time
+
 from src.__helpers__.__utils__ import (
     convert_t_dict_key_to_numpy_arrays,
     get_one_file_with_extension,
@@ -8,13 +10,13 @@ from src.__helpers__.__utils__ import (
 from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
-from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
+from src.data_manipulation.transformers.truncator.mix_bass_data_truncator import (
     data_truncator,
 )
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
 
 
-def mixed_signal_to_dict(base_path, files_to_transform, save_file_path):
+def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=False):
     t_dict = {
         "x": list(),
         "y": list(),
@@ -24,17 +26,15 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path):
         "min_dimension": 0,
     }
 
-    """
-    # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
-    data_point_multitude = 1
-    """
+    if pause == True:
+        data_point_multitude = 1
 
     data_point_amount = 0
     dim = []
 
     """
     # Iterates over all folders in base_path and checks if the folder is included in the files_to_transform list.
-    # If yes, transforms the mix wav file and the bass wav file into spectrograms.
+    # If yes, transforms the mix .wav file and the bass .wav file into spectrograms.
     """
     for foldername in os.listdir(f"{base_path}"):
         if foldername in files_to_transform:
@@ -60,13 +60,11 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path):
 
                     print()
 
-                    """
-                    # Uncomment if a pause is needed to prevent computer hardware from becoming overwhelmed
-                    if data_point_amount == (data_point_multitude * 10):
-                        print("Waiting for 10 seconds")
-                        data_point_multitude += 1
-                        time.sleep(10)
-                    """
+                    if pause == True:
+                        if data_point_amount == (data_point_multitude * 10):
+                            print("Waiting for 10 seconds")
+                            data_point_multitude += 1
+                            time.sleep(10)
 
                     bass_file_path = f"{bass_folder_path}/{bass_file_name}"
 
@@ -74,7 +72,7 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path):
                         file_path=mix_file_path
                     )
                     bass_spectrogram, bass_phase = audio_to_freq_time_analysis(
-                        file_path=bass_file_path, flag=True
+                        file_path=bass_file_path
                     )
 
                     t_dict["x"].append(mix_spectrogram)
@@ -92,6 +90,7 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path):
                     del mix_file_name
 
                     data_point_amount += 1
+
                 if data_point_amount == 1:
                     break
             if data_point_amount == 1:
@@ -113,31 +112,19 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path):
     t_dict = data_truncator(data=t_dict, min_dimension=min_dimension, flag="initial")
     t_dict["min_dimension"] = min_dimension
 
-    # Transform to recarray
+    # Transform to array
     t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
-
-    """
-    # Save un-normalized data
-    savez_numpy_data(file_path=save_file_path, data=t_dict_recarray)
-    """
 
     # Normalize the data
     norm_x = Normalizer(t_dict["x"])
     t_dict["x"], t_dict["min_max_amplitudes"] = norm_x.normalize(), norm_x.get_min_max()
     norm_y = Normalizer(t_dict["y"])
     t_dict["y"], t_dict["min_max_amplitudes"] = norm_y.normalize(), norm_y.get_min_max()
+
+    # Transform to recarray
     t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
     # Save normalized data
     savez_numpy_data(file_path=f"{save_file_path}", data=t_dict_recarray)
 
     print(f"@@@@@@@@@@ Processed files: {data_point_amount}")
-
-
-def transform_bass_to_spectrogam(base_path, files_to_transform, save_file_path):
-    """
-    This is only really needed for testing and the initial design of model two, as the bass audio needed as an input for
-    model two will be coming from the output of model one, already in spectrogram form, once the pipeline is completed
-    """
-
-    return

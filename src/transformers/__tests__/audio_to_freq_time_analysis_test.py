@@ -5,8 +5,11 @@ from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_anal
 
 
 def test_audio_to_freq_time_analysis_valid_file():
-    # Update the below path to point to an audio .wav file of your choosing.
-    # Expected result is based on real spectrogram data
+    """
+    Update the below path to point to an audio .wav file of your choosing.
+    Expected result is based on real spectrogram data
+    """
+
     audio_file_path = (
         "./transformers/__tests__/test_data/AClassicEducation_NightOwl/AClassicEducation_NightOwl_MIX"
         ".wav"

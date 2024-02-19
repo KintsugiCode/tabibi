@@ -56,12 +56,11 @@ def audio_to_freq_time_analysis(file_path, flag=False):
         mel_spectrogram = np.dot(mel_scale, mag_spectrogram)
 
         # Uncomment if volume threshold fourierparameter desired
-        """
+
         if flag:
             mel_spectrogram[
                 mel_spectrogram < fourierparameters["audio_amplitude_threshold"]
             ] = 0
-        """
 
         return mel_spectrogram, phase
 
