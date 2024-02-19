@@ -71,6 +71,3 @@ def transform_data(flag):
 
     else:
         raise Exception("Invalid flag passed to transform_data function.")
-
-
-transform_data(flag="tab transcription")
