@@ -9,10 +9,12 @@ def data_truncator(
     min_dimension_test=np.inf,
 ):
     """
-    If passed the dimension of the shortest datapoint in a dataset, this truncates all datapoints in that dataset to
-    that dimension and stores that value for potential later use with masking.
-    If passed the dimensions of the shortest datapoints found within each of two datasets, this truncates all
-    datapoints in both those datasets to that dimension.
+    Initial truncation is for use within one dataset.
+
+    Overall truncation is for use over multiple datasets.
+
+    Initial truncation, before knowing all datapoint dimensions over all datasets, is necessary to be able to convert
+    datasets into numpy recarrays and therefore already needs to occur during individual dataset pre-processing.
     """
     if flag == "initial":
         # Keep track of original lengths for masking

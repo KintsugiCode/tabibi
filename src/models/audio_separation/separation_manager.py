@@ -15,7 +15,7 @@ from src.__helpers__.constants import (
     PRED_AUDIO_FILE_PATH,
 )
 from src.data_manipulation.transformers.transform_data import transform_data
-from src.data_manipulation.transformers.truncating.mix_bass_data_truncator import (
+from src.data_manipulation.transformers.truncator.mix_bass_data_truncator import (
     data_truncator,
 )
 from src.models.audio_separation.test_separation import test_separation

@@ -34,7 +34,6 @@ def train_separation(x_train, y_train, model, criterion, optimizer, data_train):
         calculate the loss between the model's predictions (outputs), and the actual target values (y_train)
 
         """
-
         outputs, _ = model(
             x_train,
         )
