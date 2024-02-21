@@ -1,12 +1,11 @@
 import math
 
 import librosa
-import numpy as np
 import soundfile as sf
 import json
 import os
 
-from src.data_manipulation.transformers.normalization.mix_bass_data_normalizer import (
+from src.data_manipulation.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
 from scipy.signal import butter, lfilter
@@ -36,7 +35,7 @@ def freq_time_analysis_to_audio(
     output_file_path,
     mix_names,
     min_max_amplitudes,
-    flag,
+    tag,
 ):
     try:
         track_counter = 0
@@ -78,7 +77,7 @@ def freq_time_analysis_to_audio(
 
             # Save the audio to file
             sf.write(
-                f"{output_file_path}/{track_counter}-{flag}-{mix_names[track]}",
+                f"{output_file_path}/{track_counter}-{tag}-{mix_names[track]}",
                 audio,
                 fourierparameters["sample_rate"],
             )

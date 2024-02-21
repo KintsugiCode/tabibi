@@ -3,27 +3,29 @@ import os
 import torch
 from torch import nn
 
-from src.models.audio_separation.gru.gru import GRU
-
 from src.__helpers__.__utils__ import load_numpy_data
 from src.__helpers__.constants import (
     MODEL1_TRAIN_FOLDER_PATH,
     MODEL1_TRAIN_FILE_NAME,
     MODEL1_TEST_FOLDER_PATH,
     MODEL1_TEST_FILE_NAME,
-    TRAINED_MODEL_SAVE_PATH,
     PRED_AUDIO_FILE_PATH,
+    TRAINED_MODEL1_SAVE_PATH,
 )
-from src.data_manipulation.transformers.transform_data import transform_data
-from src.data_manipulation.transformers.truncator.mix_bass_data_truncator import (
+from src.data_manipulation.transform_data import transform_data
+from src.data_manipulation.truncator.mix_bass_data_truncator import (
     data_truncator,
 )
-from src.models.audio_separation.test_separation import test_separation
-from src.models.audio_separation.train_separation import train_separation
+from src.models.audio_separation.gru.gru_separation import GRU_Separation
+from src.models.test import test
+from src.models.train import train
+
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-hyperparameters_path = os.path.join(dir_path, "../../config/hyperparameters_audio.json")
+hyperparameters_path = os.path.join(
+    dir_path, "../../config/hyperparameters_separation.json"
+)
 
 with open(hyperparameters_path) as hyperparameters_file:
     hyperparameters = json.load(hyperparameters_file)
@@ -66,14 +68,20 @@ def separation_manager():
     x_train = torch.stack([torch.tensor(x) for x in data_train["x"]])
     y_train = torch.stack([torch.tensor(y) for y in data_train["y"]])
 
+    x_train = x_train.float()
+    y_train = y_train.float()
+
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
     print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
     x_test = torch.stack([torch.tensor(x) for x in data_test["x"]])
     y_test = torch.stack([torch.tensor(y) for y in data_test["y"]])
 
+    x_test = x_test.float()
+    y_test = y_test.float()
+
     # Initialize the model
     print("@@@@@@ Initializing the model @@@@@@")
-    model = GRU(
+    model = GRU_Separation(
         input_size=x_train.shape[2],
         hidden_dim=hyperparameters["hidden_dim"],
         n_layers=hyperparameters["n_layers"],
@@ -88,14 +96,16 @@ def separation_manager():
     )
 
     # Train the model
-    model = train_separation(x_train, y_train, model, criterion, optimizer, data_train)
+    model = train(
+        x_train, y_train, model, criterion, optimizer, data_train, tag="separation"
+    )
 
     # Save the trained model
     print("@@@@@@ Saving trained model @@@@@@")
-    torch.save(model.state_dict(), TRAINED_MODEL_SAVE_PATH)
+    torch.save(model.state_dict(), TRAINED_MODEL1_SAVE_PATH)
 
     # Test the model
-    y_pred = test_separation(x_test, y_test, model, criterion)
+    y_pred = test(x_test, y_test, model, criterion)
 
     # Convert first three tracks back to audio for review
     freq_time_analysis_to_audio(
@@ -104,5 +114,5 @@ def separation_manager():
         PRED_AUDIO_FILE_PATH,
         data_test["mix_name"],
         data_test["min_max_amplitudes"],
-        flag="TESTING",
+        tag="SEPARATION-TESTING",
     )

@@ -11,12 +11,12 @@ src/models/trained_models/*
 
 # Visualized Output
 
-src/visualization/predicted_audio/*
-src/visualization/trained_audio/*
+src/visualization/audio/predicted_audio/*
+src/visualization/audio/trained_audio/*
 src/visualization/fourier_and_back_trial/audio/*
-src/visualization/spectrograms_visualized/outputs/*
-src/visualization/trained_audio/first success
-src/visualization/A Classic Education - Nightowl
+src/visualization/spectrograms/outputs/*
+src/visualization/freq_time_analysis_trial/*
+
 
 # Distribution / packaging
 .Python
