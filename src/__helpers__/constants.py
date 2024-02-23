@@ -15,6 +15,7 @@ MODEL1_TRAIN_FILE_PATH = (
 MODEL1_TEST_FILE_PATH = (
     f"{MODEL1_TEST_FOLDER_PATH}/normalized_{MODEL1_TEST_FILE_NAME}.npz"
 )
+TRAINED_MODEL1_SAVE_PATH = "../models/trained_models/separation/mark1.pt"
 
 
 # Model 2 Constants - relative paths to datasets as seen from the main.py file
@@ -34,10 +35,11 @@ MODEL2_TRAIN_FILE_PATH = (
 MODEL2_TEST_FILE_PATH = (
     f"{MODEL2_TEST_FOLDER_PATH}/normalized_{MODEL2_TEST_FILE_NAME}.npz"
 )
+TRAINED_MODEL2_SAVE_PATH = "../models/trained_models/transcription/mark1.pt"
 
 
 # Visualisation and Testing constants
-TRAINED_AUDIO_FILE_PATH = "../visualization/trained_audio"
-PRED_AUDIO_FILE_PATH = "../visualization/predicted_audio"
-VISUALIZATION_SAVE_PATH = "../visualization/spectrograms_visualized/outputs"
-TRAINED_MODEL_SAVE_PATH = "../models/trained_models/mark1.pt"
+TRAINED_AUDIO_FILE_PATH = "../visualization/audio/trained_audio"
+PRED_AUDIO_FILE_PATH = "../visualization/audio/predicted_audio"
+VISUALIZATION_SAVE_PATH = "../visualization/spectrograms/outputs"
+PRED_MIDI_FILE_PATH = "../visualization/midi/predicted_midi"

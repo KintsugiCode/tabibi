@@ -4,7 +4,9 @@ import json
 import os
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-hyperparameters_path = os.path.join(dir_path, "../config/hyperparameters_audio.json")
+hyperparameters_path = os.path.join(
+    dir_path, "../config/hyperparameters_separation.json"
+)
 fourierparameters_path = os.path.join(dir_path, "../config/fourierparameters.json")
 
 with open(hyperparameters_path) as hyperparameters_file:
