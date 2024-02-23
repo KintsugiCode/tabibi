@@ -18,6 +18,7 @@ src/visualization/spectrograms/outputs/*
 src/visualization/freq_time_analysis_trial/*
 src/visualization/midi_to_piano_roll_and_back_trial/outputs/*
 src/visualization/midi_to_piano_roll_and_back_trial/data/*
+src/visualization/midi/predicted_midi/*
 
 
 # Distribution / packaging
