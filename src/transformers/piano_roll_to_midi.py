@@ -51,29 +51,32 @@ def piano_roll_to_midi(
                 pitch_events = piano_roll[track, pitch, :]
                 scale_factor = int(len(time_array) / len(pitch_events))
                 note_start = None
+                is_sustained = False
                 time = None
                 # Iterate over all time steps
                 for index, value in enumerate(pitch_events):
                     time = index * scale_factor
                     # If a note is being played at this time step
                     if value > 0:
-                        # If previous note has not been ended yet, end it now
-                        if note_start is not None:
-                            end_time = time_array[time]
-                            note = pretty_midi.Note(
-                                velocity=100,
-                                pitch=pitch,
-                                start=note_start,
-                                end=end_time,
-                            )
-                            instrument.notes.append(note)
+                        is_sustained = True
+                        if note_start is None:
+                            note_start = time_array[time].item()
+                    # Check if the note has ended
+                    elif value == 0 and is_sustained:
+                        end_time = time_array[time]
+                        note = pretty_midi.Note(
+                            velocity=100,
+                            pitch=pitch,
+                            start=note_start,
+                            end=end_time,
+                        )
+                        instrument.notes.append(note)
+                        note_start = None
+                        is_sustained = False  # Reset our flag
 
-                        # Start a new note
-                        note_start = time_array[time].item()
-
-                # End the last note when going out of the loop
-                if note_start is not None:
-                    end_time = time_array[int(time)]
+                # If a note was played but wasn't ended (last event was a non-zero)
+                if is_sustained and note_start:
+                    end_time = time_array[time]
                     note = pretty_midi.Note(
                         velocity=100,
                         pitch=pitch,
