@@ -76,7 +76,7 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=F
 
                     data_point_amount += 1
 
-        if data_point_amount == 5:
+        if data_point_amount == 10:
             break
 
     try:

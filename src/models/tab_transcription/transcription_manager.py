@@ -10,6 +10,7 @@ from src.__helpers__.constants import (
     MODEL2_TEST_FOLDER_PATH,
     MODEL2_TEST_FILE_NAME,
     TRAINED_MODEL2_SAVE_PATH,
+    PRED_MIDI_FILE_PATH,
 )
 from src.data_manipulation.transform_data import transform_data
 from src.data_manipulation.truncator.mix_bass_data_truncator import (
@@ -18,6 +19,7 @@ from src.data_manipulation.truncator.mix_bass_data_truncator import (
 from src.models.tab_transcription.gru.gru_transcription import GRU_Transcription
 from src.models.test import test
 from src.models.train import train
+from src.transformers.piano_roll_to_midi import piano_roll_to_midi
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 hyperparameters_path = os.path.join(
@@ -103,3 +105,11 @@ def transcription_manager():
 
     # Test the model
     y_pred = test(x_test, y_test, model, criterion)
+
+    # Convert first three piano-roll spectrograms back to midi for review
+    piano_roll_to_midi(
+        piano_roll=y_pred[:3],
+        output_file_path=PRED_MIDI_FILE_PATH,
+        mix_names=data_test["mix_name"],
+        tag="TRANSCRIPTION-TESTING",
+    )
