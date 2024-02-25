@@ -3,7 +3,7 @@ import os
 import torch
 from torch import nn
 from src.__helpers__.__utils__ import load_numpy_data
-from src.__helpers__.constants import (
+from src.config.constants import (
     MODEL2_TRAIN_FOLDER_PATH,
     MODEL2_TRAIN_FILE_NAME,
     MODEL2_TEST_FOLDER_PATH,
@@ -62,7 +62,7 @@ def transcription_manager():
     )
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
-    print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
+    print("@@@@@@ Converting training data to PyTorch tensor @@@@@@")
     x_train = torch.stack([torch.tensor(x) for x in data_train["x"]])
     y_train = torch.stack([torch.tensor(y) for y in data_train["y"]])
 
@@ -70,7 +70,7 @@ def transcription_manager():
     y_train = y_train.float()
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
-    print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
+    print("@@@@@@ Converting testing data to PyTorch tensor @@@@@@")
     x_test = torch.stack([torch.tensor(x) for x in data_test["x"]])
     y_test = torch.stack([torch.tensor(y) for y in data_test["y"]])
 

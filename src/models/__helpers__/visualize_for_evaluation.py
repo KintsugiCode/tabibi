@@ -1,4 +1,4 @@
-from src.__helpers__.constants import VISUALIZATION_SAVE_PATH, TRAINED_AUDIO_FILE_PATH
+from src.config.constants import VISUALIZATION_SAVE_PATH, TRAINED_AUDIO_FILE_PATH
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 from src.visualization.spectrograms.visualize_spectrograms import visualize_spectrograms
 
