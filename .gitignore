@@ -2,6 +2,25 @@
 # Datasets
 
 src/data/*
+src/transformers/__tests__/test_data/*
+src/data_manipulation/__tests__/test_data*
+
+# Models
+
+src/models/trained_models/*
+
+
+# Visualized Output
+
+src/visualization/audio/predicted_audio/*
+src/visualization/audio/trained_audio/*
+src/visualization/fourier_and_back_trial/audio/*
+src/visualization/spectrograms/outputs/*
+src/visualization/freq_time_analysis_trial/*
+src/visualization/midi_to_piano_roll_and_back_trial/outputs/*
+src/visualization/midi_to_piano_roll_and_back_trial/data/*
+src/visualization/midi/predicted_midi/*
+
 
 # Distribution / packaging
 .Python
@@ -55,6 +74,7 @@ coverage.xml
 # Mac OS-specific storage files
 .DS_Store
 .idea
+__pycache__
 
 # vim
 *.swp
