@@ -39,7 +39,7 @@ class GRU_Transcription(nn.Module):
         hidden_i = self.init_hidden(batch_size)
 
         # Pass in input and hidden state and obtain outputs
-        out, hidden_j = self.gru(x, hidden_i)  # Changed to gru
+        out, hidden_j = self.gru(x, hidden_i)
 
         # Pass output through dropout layer
         out = self.dropout(out)

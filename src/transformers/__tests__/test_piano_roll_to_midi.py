@@ -1,8 +1,6 @@
 from unittest.mock import patch
-
 import numpy as np
 import pytest
-
 from src.transformers.piano_roll_to_midi import piano_roll_to_midi
 
 

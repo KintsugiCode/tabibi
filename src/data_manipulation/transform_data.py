@@ -1,4 +1,4 @@
-from src.__helpers__.constants import (
+from src.config.constants import (
     MODEL1_BASE_PATH,
     MODEL2_BASE_PATH,
     MODEL1_TRAIN_FILE_PATH,

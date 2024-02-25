@@ -1,6 +1,5 @@
 import json
 import os
-
 from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
 from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
 
@@ -34,12 +33,10 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
 
     # Train the model with the training data
     print("@@@@@@ Starting model training @@@@@@")
-    for epoch in range(
-        hyperparameters["n_epochs"]
-    ):  # loop over the dataset multiple times
+    for epoch in range(hyperparameters["n_epochs"]):
         print(f"@@@@@@ Starting Epoch {epoch + 1} @@@@@@")
 
-        # zero the parameter gradients
+        # Zero the parameter gradients
         optimizer.zero_grad()
 
         """
@@ -58,7 +55,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         # Update model parameters, based on the gradients calculated in the backward pass
         optimizer.step()
 
-        # print statistics
+        # Print statistics
         print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@@@@@")
 
         # Reduce learning rate if necessary
@@ -76,7 +73,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
             )
 
         # Check if loss is not changing anymore
-        if abs(prev_loss - loss.item()) < 1e-8:  # small threshold to count as no change
+        if abs(prev_loss - loss.item()) < 1e-8:
             no_change += 1
         else:
             no_change = 0

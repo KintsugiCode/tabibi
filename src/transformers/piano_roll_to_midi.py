@@ -1,6 +1,5 @@
 import json
 import os
-
 import pretty_midi
 import numpy as np
 
@@ -19,9 +18,7 @@ def piano_roll_to_midi(
     mix_names,
     program=34,
 ):
-    """
-    TODOs -- This code needs expanding to properly handle sustained notes and convert them to midi notes.
-    """
+
     try:
         track_counter = 0
 
@@ -72,7 +69,7 @@ def piano_roll_to_midi(
                         )
                         instrument.notes.append(note)
                         note_start = None
-                        is_sustained = False  # Reset our flag
+                        is_sustained = False
 
                 # If a note was played but wasn't ended (last event was a non-zero)
                 if is_sustained and note_start:

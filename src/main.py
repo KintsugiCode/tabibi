@@ -3,7 +3,9 @@ from src.models.tab_transcription.transcription_manager import transcription_man
 
 
 def main():
+    print("@@@@@@ SEPARATION PIPELINE START @@@@@@")
     separation_manager()
+    print("@@@@@@ TRANSCRIPTION PIPELINE START @@@@@@")
     transcription_manager()
 
 

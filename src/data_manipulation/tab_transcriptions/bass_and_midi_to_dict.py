@@ -1,6 +1,5 @@
 import os
 import time
-
 from src.__helpers__.__utils__ import (
     convert_t_dict_key_to_numpy_arrays,
     convert_to_recarray,
@@ -76,9 +75,6 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=F
 
                     data_point_amount += 1
 
-        if data_point_amount == 10:
-            break
-
     try:
         # Save min_dimension to later truncate the dataset again after overall min_dimension of datasets is known
         min_dimension = min(dim)
@@ -87,21 +83,34 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=F
             "An error occurred when calculating the minimum dimension.".format(e)
         )
 
-    # Padding and masking preparation
-    t_dict = data_truncator(data=t_dict, min_dimension=min_dimension, flag="initial")
-    t_dict["min_dimension"] = min_dimension
+    try:
+        # Padding and masking preparation
+        t_dict = data_truncator(
+            data=t_dict, min_dimension=min_dimension, flag="initial"
+        )
+        t_dict["min_dimension"] = min_dimension
 
-    # Transform to array
-    t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
+        # Transform to array
+        t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
 
-    # Normalize the bass spectrograms
-    norm_x = Normalizer(t_dict["x"])
-    t_dict["x"], t_dict["min_max_amplitudes"] = norm_x.normalize(), norm_x.get_min_max()
+        # Normalize the data
+        norm_x = Normalizer(t_dict["x"])
+        t_dict["x"], t_dict["min_max_amplitudes"] = (
+            norm_x.normalize(),
+            norm_x.get_min_max(),
+        )
 
-    # Transform to recarray
-    t_dict_recarray = convert_to_recarray(data_dict=t_dict)
+        # Transform to recarray
+        t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
-    # Save normalized data
+        print(f"@@@@@@@@@@ Processed files: {data_point_amount}")
+
+    except Exception as e:
+        raise Exception(
+            "An error occurred during spectrogram-to-data-format conversion."
+        )
+
+    if not save_file_path:
+        raise ValueError("An error occurred. 'save_file_path' cannot be empty")
+        # Save normalized data
     savez_numpy_data(file_path=f"{save_file_path}", data=t_dict_recarray)
-
-    print(f"@@@@@@@@@@ Processed files: {data_point_amount}")

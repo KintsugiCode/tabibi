@@ -8,10 +8,10 @@ class Normalizer:
         self.max_val = None
 
     def normalize(self):
-        # find min and max values of array
+        # Find min and max values of array
         self.min_val, self.max_val = np.min(self.array), np.max(self.array)
 
-        # avoid division-by-zero error in case of all same elements
+        # Avoid division-by-zero error in case of all same elements
         if self.min_val == self.max_val:
             self.array[:] = 0
         else:

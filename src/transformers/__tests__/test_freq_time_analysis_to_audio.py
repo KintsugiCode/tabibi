@@ -1,8 +1,6 @@
 import pytest
 import numpy as np
 from unittest.mock import patch
-
-
 from src.transformers.freq_time_analysis_to_audio import (
     lowpass_filter,
     butter_lowpass,
@@ -38,14 +36,12 @@ def setup_data():
     mel_spectrogram_array = np.array(
         [[[1.0, 2.0, 3.0, 4.0, 5.0], [1.0, 2.0, 3.0, 4.0, 5.0]]]
     )
-    phase_array = np.array([0.0, 0.0, 0.0, 0.0, 0.0])
     output_file_path = "test_data/audio"
     mix_names = ["audio1.wav", "audio2.wav", "audio3.wav", "audio4.wav", "audio5.wav"]
     min_max_amplitudes = (0, 1)
     tag = "test"
     return (
         mel_spectrogram_array,
-        phase_array,
         output_file_path,
         mix_names,
         min_max_amplitudes,
@@ -60,7 +56,6 @@ def test_freq_time_analysis_to_audio(mel_to_stft, setup_data):
     """
     (
         mel_spectrogram_array,
-        phase_array,
         output_file_path,
         mix_names,
         min_max_amplitudes,
@@ -70,7 +65,6 @@ def test_freq_time_analysis_to_audio(mel_to_stft, setup_data):
     with pytest.raises(Exception):
         freq_time_analysis_to_audio(
             mel_spectrogram_array,
-            phase_array,
             output_file_path,
             mix_names,
             min_max_amplitudes,

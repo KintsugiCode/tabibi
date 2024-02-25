@@ -2,9 +2,8 @@ import json
 import os
 import torch
 from torch import nn
-
 from src.__helpers__.__utils__ import load_numpy_data
-from src.__helpers__.constants import (
+from src.config.constants import (
     MODEL1_TRAIN_FOLDER_PATH,
     MODEL1_TRAIN_FILE_NAME,
     MODEL1_TEST_FOLDER_PATH,
@@ -19,7 +18,6 @@ from src.data_manipulation.truncator.mix_bass_data_truncator import (
 from src.models.audio_separation.gru.gru_separation import GRU_Separation
 from src.models.test import test
 from src.models.train import train
-
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -64,7 +62,7 @@ def separation_manager():
     )
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
-    print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
+    print("@@@@@@ Converting training data to PyTorch tensor @@@@@@")
     x_train = torch.stack([torch.tensor(x) for x in data_train["x"]])
     y_train = torch.stack([torch.tensor(y) for y in data_train["y"]])
 
@@ -72,7 +70,7 @@ def separation_manager():
     y_train = y_train.float()
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
-    print("@@@@@@ Converting to PyTorch Tensor @@@@@@")
+    print("@@@@@@ Converting testing data to PyTorch tensor @@@@@@")
     x_test = torch.stack([torch.tensor(x) for x in data_test["x"]])
     y_test = torch.stack([torch.tensor(y) for y in data_test["y"]])
 
@@ -109,10 +107,9 @@ def separation_manager():
 
     # Convert first three tracks back to audio for review
     freq_time_analysis_to_audio(
-        y_pred[:3],
-        data_test["y_phase"],
-        PRED_AUDIO_FILE_PATH,
-        data_test["mix_name"],
-        data_test["min_max_amplitudes"],
+        mel_spectrogram_array=y_pred[:3],
+        output_file_path=PRED_AUDIO_FILE_PATH,
+        mix_names=data_test["mix_name"],
+        min_max_amplitudes=data_test["min_max_amplitudes"],
         tag="SEPARATION-TESTING",
     )

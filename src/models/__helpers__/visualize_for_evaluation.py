@@ -1,4 +1,4 @@
-from src.__helpers__.constants import VISUALIZATION_SAVE_PATH, TRAINED_AUDIO_FILE_PATH
+from src.config.constants import VISUALIZATION_SAVE_PATH, TRAINED_AUDIO_FILE_PATH
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
 from src.visualization.spectrograms.visualize_spectrograms import visualize_spectrograms
 
@@ -19,10 +19,9 @@ def visualize_for_evaluation(outputs, x, y, data, flag, tag):
     )
     if flag:
         freq_time_analysis_to_audio(
-            outputs_for_visualization[:3],
-            data["y_phase"],
-            TRAINED_AUDIO_FILE_PATH,
-            data["mix_name"],
-            data["min_max_amplitudes"],
+            mel_spectrogram_array=outputs_for_visualization[:3],
+            output_file_path=TRAINED_AUDIO_FILE_PATH,
+            mix_names=data["mix_name"],
+            min_max_amplitudes=data["min_max_amplitudes"],
             tag=tag,
         )
