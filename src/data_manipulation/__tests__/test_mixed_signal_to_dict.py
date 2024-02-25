@@ -1,7 +1,5 @@
-import numpy as np
 import pytest
 import os
-
 from unittest.mock import patch
 from src.data_manipulation.audio_spectrograms.mixed_signal_to_dict import (
     mixed_signal_to_dict,
@@ -72,9 +70,7 @@ def test_invalid_file_format(mock_savez_numpy_data):
     """
     Tests if the function raises an error when the file format is not .wav.
     """
-    with pytest.raises(
-        Exception
-    ):  # Assuming the function raises an Exception for invalid file format
+    with pytest.raises(Exception):
         mixed_signal_to_dict(BASE_PATH, ["invalid_format_file"], "save/file/path")
 
 

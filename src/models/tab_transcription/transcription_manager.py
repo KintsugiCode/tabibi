@@ -2,7 +2,6 @@ import json
 import os
 import torch
 from torch import nn
-
 from src.__helpers__.__utils__ import load_numpy_data
 from src.__helpers__.constants import (
     MODEL2_TRAIN_FOLDER_PATH,

@@ -1,6 +1,5 @@
 import os
 import time
-
 from src.__helpers__.__utils__ import (
     convert_t_dict_key_to_numpy_arrays,
     get_one_file_with_extension,
@@ -92,13 +91,6 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=Fa
                         "An error occurred in processing {}: {}".format(foldername, e)
                     )
 
-                if data_point_amount == 2:
-                    break
-            if data_point_amount == 2:
-                break
-        if data_point_amount == 2:
-            break
-
     try:
         # Save min_dimension to later truncate the dataset again after overall min_dimension of datasets is known
         min_dimension = min(dim)
@@ -139,6 +131,6 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=Fa
         )
 
     if not save_file_path:
-        raise ValueError("An error occurred. 'save_file_path' cannot be empty")
+        raise ValueError("An error occurred. 'save_file_path' cannot be empty.")
     # Save normalized data
     savez_numpy_data(file_path=f"{save_file_path}", data=t_dict_recarray)

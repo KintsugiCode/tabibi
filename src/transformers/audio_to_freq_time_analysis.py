@@ -18,12 +18,12 @@ with open(fourierparameters_path) as fourierparameters_file:
 
 def audio_to_freq_time_analysis(file_path, flag=False):
     try:
-        # use librosa to load audio file
+        # Use librosa to load audio file
         signal, sample_rate = librosa.load(
             file_path, sr=fourierparameters["sample_rate"], mono=True
         )
 
-        # determine the indices for the middle n seconds
+        # Determine the indices for the middle n seconds
         start_idx = int(
             (
                 len(signal) / fourierparameters["sample_rate"]
@@ -41,14 +41,14 @@ def audio_to_freq_time_analysis(file_path, flag=False):
         signal = signal[start_idx:end_idx]
 
         # STFT -> spectrogram
-        hop_length = fourierparameters["hop_length"]  # in num. of samples
-        n_fft = fourierparameters["n_fft"]  # window in num. of samples
-        n_mels = fourierparameters["n_mels"]  # number of mel bands to generate
+        hop_length = fourierparameters["hop_length"]
+        n_fft = fourierparameters["n_fft"]
+        n_mels = fourierparameters["n_mels"]
 
-        # perform stft
+        # Perform stft
         stft = librosa.stft(signal, n_fft=n_fft, hop_length=hop_length)
 
-        # calculate abs values on complex numbers to get magnitude
+        # Calculate abs values on complex numbers to get magnitude
         mag_spectrogram, phase = librosa.magphase(stft)
 
         # Create filters
@@ -56,8 +56,6 @@ def audio_to_freq_time_analysis(file_path, flag=False):
 
         # Constructing Mel Spectrogram by matrix multiplying STFT with Mel filters
         mel_spectrogram = np.dot(mel_scale, mag_spectrogram)
-
-        # Uncomment if volume threshold fourierparameter desired
 
         if flag:
             mel_spectrogram[

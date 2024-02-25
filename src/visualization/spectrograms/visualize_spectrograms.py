@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.fft import rfft, rfftfreq
 import matplotlib.pyplot as plt
 import librosa
 import librosa.display
@@ -23,6 +22,10 @@ def visualize_spectrograms(
     mix_name,
     tag,
 ):
+    """
+    Use this function to create graphs that help recognize the training success of the separation model.
+    """
+
     sr = fourierparameters["sample_rate"]
     hop_length = fourierparameters["hop_length"]
 
@@ -39,9 +42,8 @@ def visualize_spectrograms(
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - x_train - {mix_name[0]}")
     plt.tight_layout()
-    # show plots
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-x_train.png")
-    print("@@@@@@ Completed x_train spectrogram @@@@@@")
+
     print("@@@@@@ Creating y_train spectrogram @@@@@@")
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
@@ -55,9 +57,8 @@ def visualize_spectrograms(
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]}")
     plt.tight_layout()
-    # show plots
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-y_train.png")
-    print("@@@@@@ Completed y_train spectrogram @@@@@@")
+
     print("@@@@@@ Creating y_train_output spectrogram @@@@@@")
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
@@ -71,6 +72,4 @@ def visualize_spectrograms(
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]}")
     plt.tight_layout()
-    # show plots
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-y_train_output.png")
-    print("@@@@@@ Completed y_train_output spectrogram @@@@@@")

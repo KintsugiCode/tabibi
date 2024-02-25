@@ -1,9 +1,7 @@
 import json
 import os
-
 import numpy as np
 import pytest
-
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
 
 
@@ -49,12 +47,13 @@ def test_flag_false_gives_values_below_threshold():
 
 def test_flag_true_has_values_above_threshold():
     """
-    Test if the function's output contains only non-zero values above the threshold when flag is True.
+    Test if the function's output contains only zeroes and non-zero values that are above the threshold when flag is
+    True.
     """
     output, _ = audio_to_freq_time_analysis(file_path, flag=True)
-    # Ignore zeroes, as they are below threshold, but that is deliberate.
-    non_zero_output = output[output != 0]
-    assert not np.any(non_zero_output < fourierparameters["audio_amplitude_threshold"])
+    assert not np.any(
+        (0 < output) & (output < fourierparameters["audio_amplitude_threshold"])
+    )
 
 
 def test_audio_to_freq_time_analysis_returns_tuple():

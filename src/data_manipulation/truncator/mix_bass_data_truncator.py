@@ -9,12 +9,8 @@ def data_truncator(
     min_dimension_test=np.inf,
 ):
     """
-    Initial truncation is for use within one dataset.
-
-    Overall truncation is for use over multiple datasets.
-
-    Initial truncation, before knowing all datapoint dimensions over all datasets, is necessary to be able to convert
-    datasets into numpy recarrays and therefore already needs to occur during individual dataset pre-processing.
+    Initial truncation is for use within one dataset to truncate all tracks within that dataset to the same length.
+    Overall truncation is for use over multiple datasets to truncate all tracks from all datasets to the same length.
     """
     if flag == "initial":
         # Keep track of original lengths for masking
