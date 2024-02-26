@@ -29,7 +29,7 @@ def visualize_spectrograms(
     sr = fourierparameters["sample_rate"]
     hop_length = fourierparameters["hop_length"]
 
-    print("@@@@@@ Creating x_train spectrogram @@@@@@")
+    print("@@@@ Creating x_train spectrogram @@@@")
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
         librosa.power_to_db(mel_spectrogram_x_train, ref=np.max),
@@ -44,7 +44,7 @@ def visualize_spectrograms(
     plt.tight_layout()
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-x_train.png")
 
-    print("@@@@@@ Creating y_train spectrogram @@@@@@")
+    print("@@@@ Creating y_train spectrogram @@@@")
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
         librosa.power_to_db(mel_spectrogram_y_train, ref=np.max),
@@ -59,7 +59,7 @@ def visualize_spectrograms(
     plt.tight_layout()
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-y_train.png")
 
-    print("@@@@@@ Creating y_train_output spectrogram @@@@@@")
+    print("@@@@ Creating y_train_output spectrogram @@@@")
     plt.figure(figsize=(10, 4))
     librosa.display.specshow(
         librosa.power_to_db(mel_spectrogram_y_train_output, ref=np.max),

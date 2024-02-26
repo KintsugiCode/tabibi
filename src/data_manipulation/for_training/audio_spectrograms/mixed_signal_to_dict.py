@@ -6,10 +6,10 @@ from src.__helpers__.__utils__ import (
     savez_numpy_data,
     convert_to_recarray,
 )
-from src.data_manipulation.normalization.mix_bass_data_normalizer import (
+from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
-from src.data_manipulation.truncator.mix_bass_data_truncator import (
+from src.data_manipulation.__helpers__.truncator.mix_bass_data_truncator import (
     data_truncator,
 )
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
@@ -63,7 +63,8 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=Fa
 
                         if pause:
                             if data_point_amount == (data_point_multitude * 10):
-                                print("Waiting for 10 seconds")
+                                print("@@@@ Waiting for 10 seconds @@@@")
+                                print()
                                 data_point_multitude += 1
                                 time.sleep(10)
 
@@ -82,7 +83,7 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=Fa
                         t_dict["y_phase"].append(bass_phase)
                         t_dict["mix_name"].append(mix_file_name)
 
-                        # Track the dimensions for later padding
+                        # Track the dimensions for later padding/truncating
                         dim.append(mix_spectrogram.shape[1])
 
                         data_point_amount += 1
@@ -124,7 +125,9 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=Fa
         # Transform to recarray
         t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
-        print(f"@@@@@@@@@@ Processed files: {data_point_amount}")
+        print(f"@@@@@@ Processed files: {data_point_amount} @@@@@@")
+        print()
+
     except Exception as e:
         raise Exception(
             "An error occurred during spectrogram-to-data-format conversion."

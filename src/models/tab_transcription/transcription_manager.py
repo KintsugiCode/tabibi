@@ -12,7 +12,7 @@ from src.config.constants import (
     PRED_MIDI_FILE_PATH,
 )
 from src.data_manipulation.transform_data import transform_data
-from src.data_manipulation.truncator.mix_bass_data_truncator import (
+from src.data_manipulation.__helpers__.truncator.mix_bass_data_truncator import (
     data_truncator,
 )
 from src.models.tab_transcription.gru.gru_transcription import GRU_Transcription
@@ -34,13 +34,13 @@ def transcription_manager():
     transform_data(flag="tab transcription")
 
     # Load the training dataset
-    print("@@@@@@ Loading the training dataset @@@@@@")
+    print("@@@@ Loading the training dataset @@@@")
     data_train = load_numpy_data(
         f"{MODEL2_TRAIN_FOLDER_PATH}/normalized_{MODEL2_TRAIN_FILE_NAME}.npz"
     )
 
     # Load the testing dataset
-    print("@@@@@@ Loading the testing dataset @@@@@@")
+    print("@@@@ Loading the testing dataset @@@@")
     data_test = load_numpy_data(
         f"{MODEL2_TEST_FOLDER_PATH}/normalized_{MODEL2_TEST_FILE_NAME}.npz"
     )
@@ -62,7 +62,6 @@ def transcription_manager():
     )
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
-    print("@@@@@@ Converting training data to PyTorch tensor @@@@@@")
     x_train = torch.stack([torch.tensor(x) for x in data_train["x"]])
     y_train = torch.stack([torch.tensor(y) for y in data_train["y"]])
 
@@ -70,7 +69,6 @@ def transcription_manager():
     y_train = y_train.float()
 
     # Convert to PyTorch Tensor -- Individual conversion before grouped conversion is faster for large datasets
-    print("@@@@@@ Converting testing data to PyTorch tensor @@@@@@")
     x_test = torch.stack([torch.tensor(x) for x in data_test["x"]])
     y_test = torch.stack([torch.tensor(y) for y in data_test["y"]])
 
@@ -78,7 +76,6 @@ def transcription_manager():
     y_test = y_test.float()
 
     # Initialize the model
-    print("@@@@@@ Initializing the model @@@@@@")
     model = GRU_Transcription(
         input_size=x_train.shape[2],
         hidden_dim=hyperparameters["hidden_dim"],
@@ -99,7 +96,7 @@ def transcription_manager():
     )
 
     # Save the trained model
-    print("@@@@@@ Saving trained model @@@@@@")
+    print("@@@@ Saving trained model @@@@")
     torch.save(model.state_dict(), TRAINED_MODEL2_SAVE_PATH)
 
     # Test the model
@@ -111,4 +108,5 @@ def transcription_manager():
         output_file_path=PRED_MIDI_FILE_PATH,
         mix_names=data_test["mix_name"],
         tag="TRANSCRIPTION-TESTING",
+        flag="development",
     )

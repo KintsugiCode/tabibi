@@ -3,7 +3,7 @@ import soundfile as sf
 import json
 import os
 
-from src.data_manipulation.normalization.mix_bass_data_normalizer import (
+from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
 from scipy.signal import butter, lfilter
@@ -43,7 +43,7 @@ def freq_time_analysis_to_audio(
             mel_spectrogram_array[track] = Normalizer(
                 mel_spectrogram_array[track]
             ).denormalize(min_val, max_val)
-            print(f"@@@@@@ Recreating audio of track {track} @@@@@@")
+            print(f"@@@@ Recreating audio of track {track} @@@@")
             spectrogram_array = librosa.feature.inverse.mel_to_stft(
                 mel_spectrogram_array,
                 sr=fourierparameters["sample_rate"],
@@ -69,7 +69,7 @@ def freq_time_analysis_to_audio(
                 audio,
                 fourierparameters["sample_rate"],
             )
-        print("@@@@@@ Audio recreation completed @@@@@@")
+        print("@@@@ Audio recreation completed @@@@")
 
     except Exception as e:
         raise Exception("Exception occurred: {}".format(e))

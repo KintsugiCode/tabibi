@@ -5,10 +5,10 @@ from src.__helpers__.__utils__ import (
     convert_to_recarray,
     savez_numpy_data,
 )
-from src.data_manipulation.normalization.mix_bass_data_normalizer import (
+from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
-from src.data_manipulation.truncator.mix_bass_data_truncator import (
+from src.data_manipulation.__helpers__.truncator.mix_bass_data_truncator import (
     data_truncator,
 )
 from src.transformers.__helpers__.resize_piano_roll import resize_piano_roll
@@ -64,12 +64,13 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=F
                     t_dict["y"].append(resized_piano_roll)
                     t_dict["mix_name"].append(file_name)
 
-                    # Track the dimensions for later padding
+                    # Track the dimensions for later padding/truncating
                     dim.append(bass_spectrogram.shape[1])
 
+                    print()
                     if pause:
                         if data_point_amount == (data_point_multitude * 10):
-                            print("Waiting for 10 seconds")
+                            print("@@@@ Waiting for 10 seconds @@@@")
                             data_point_multitude += 1
                             time.sleep(10)
 
@@ -103,7 +104,8 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=F
         # Transform to recarray
         t_dict_recarray = convert_to_recarray(data_dict=t_dict)
 
-        print(f"@@@@@@@@@@ Processed files: {data_point_amount}")
+        print(f"@@@@@@ Processed files: {data_point_amount} @@@@@@")
+        print()
 
     except Exception as e:
         raise Exception(
