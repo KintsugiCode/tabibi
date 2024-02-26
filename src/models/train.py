@@ -32,9 +32,9 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
     lr_reduced = [False] * 10
 
     # Train the model with the training data
-    print("@@@@@@ Starting model training @@@@@@")
+    print("@@@@ Starting model training @@@@")
     for epoch in range(hyperparameters["n_epochs"]):
-        print(f"@@@@@@ Starting Epoch {epoch + 1} @@@@@@")
+        print(f"@@ Starting Epoch {epoch + 1} @@")
 
         # Zero the parameter gradients
         optimizer.zero_grad()
@@ -56,7 +56,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         optimizer.step()
 
         # Print statistics
-        print(f"@@@@@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@@@@@")
+        print(f"@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@")
 
         # Reduce learning rate if necessary
         lr_reduced, optimizer = learning_rate_reducer(loss, optimizer, lr_reduced)

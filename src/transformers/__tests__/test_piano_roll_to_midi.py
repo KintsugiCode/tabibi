@@ -14,7 +14,7 @@ def test_piano_roll_to_midi_raises_exception():
     mix_names = ["mix_1", "mix_2", "mix_3", "mix4"]
 
     with pytest.raises(Exception):
-        piano_roll_to_midi(piano_roll, output_file_path, tag, mix_names)
+        piano_roll_to_midi(piano_roll, output_file_path, tag, mix_names, flag)
 
 
 @patch("pretty_midi.PrettyMIDI", autospec=True)
@@ -26,10 +26,11 @@ def test_piano_roll_to_midi_called_once(mock_pretty_midi):
     output_file_path = "../temp/"
     tag = "test_tag"
     mix_names = ["mix"]
+    flag = "development"
 
     mock_pretty_midi.return_value.instruments = []
 
-    piano_roll_to_midi(piano_roll, output_file_path, tag, mix_names)
+    piano_roll_to_midi(piano_roll, output_file_path, tag, mix_names, flag)
     assert mock_pretty_midi.call_count == 1
 
 
@@ -44,8 +45,9 @@ def test_piano_roll_to_midi_notes(mock_pretty_midi):
     output_file_path = "../temp/"
     tag = "test_tag"
     mix_names = ["mix"]
+    flag = "development"
 
     mock_pretty_midi.return_value.instruments = []
 
-    piano_roll_to_midi(piano_roll, output_file_path, tag, mix_names)
+    piano_roll_to_midi(piano_roll, output_file_path, tag, mix_names, flag)
     assert len(mock_pretty_midi.return_value.instruments[0].notes) == 2

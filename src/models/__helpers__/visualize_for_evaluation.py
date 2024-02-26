@@ -4,7 +4,7 @@ from src.visualization.spectrograms.visualize_spectrograms import visualize_spec
 
 
 def visualize_for_evaluation(outputs, x, y, data, flag, tag):
-    # Convert tensor back into numpy array and then back to audio
+    # Convert tensor back into numpy array
     outputs_for_visualization = outputs.detach().cpu().numpy()
     # Convert first three tracks back to audio for review
     x_train_for_visualization = x.detach().cpu().numpy()

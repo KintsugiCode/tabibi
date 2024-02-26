@@ -12,11 +12,7 @@ with open(fourierparameters_path) as fourierparameters_file:
 
 
 def piano_roll_to_midi(
-    piano_roll,
-    output_file_path,
-    tag,
-    mix_names,
-    program=34,
+    piano_roll, output_file_path, flag, mix_names=None, program=34, tag=""
 ):
 
     try:
@@ -85,7 +81,14 @@ def piano_roll_to_midi(
             # Add the instrument to the PrettyMIDI object
             midi.instruments.append(instrument)
 
-            midi.write(f"{output_file_path}/{track_counter}-{tag}-{mix_names[track]}")
+            if flag == "production":
+                file_path_without_extension = os.path.splitext(output_file_path)[0]
+                output_file_as_midi = file_path_without_extension + ".mid"
+                midi.write(f"{output_file_as_midi}")
+            elif flag == "development":
+                midi.write(
+                    f"{output_file_path}/{track_counter}-{tag}-{mix_names[track]}"
+                )
 
     except Exception as e:
         raise Exception(f"Exception occurred: {e}")
