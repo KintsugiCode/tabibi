@@ -16,9 +16,7 @@ def learning_rate_reducer(loss, optimizer, lr_reduced):
     for i, threshold in enumerate(thresholds):
         if loss.item() < threshold and not lr_reduced[i]:
             print("@@@@@@@@@@")
-            print("@@@@@@@@@@")
             print("@@@@@@ Cutting learning_rate in half @@@@@@")
-            print("@@@@@@@@@@")
             print("@@@@@@@@@@")
             for g in optimizer.param_groups:
                 g["lr"] = g["lr"] / 2

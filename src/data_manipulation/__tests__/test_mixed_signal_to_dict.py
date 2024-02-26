@@ -1,7 +1,7 @@
 import pytest
 import os
 from unittest.mock import patch
-from src.data_manipulation.audio_spectrograms.mixed_signal_to_dict import (
+from src.data_manipulation.for_training.audio_spectrograms.mixed_signal_to_dict import (
     mixed_signal_to_dict,
 )
 
@@ -15,7 +15,7 @@ BASE_PATH = os.path.join(
 @pytest.fixture
 def mock_savez_numpy_data():
     with patch(
-        "src.data_manipulation.audio_spectrograms.mixed_signal_to_dict.savez_numpy_data"
+        "src.data_manipulation.for_training.audio_spectrograms.mixed_signal_to_dict.savez_numpy_data"
     ) as mock:
         yield mock
 

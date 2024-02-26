@@ -1,6 +1,6 @@
 import json
 import os
-from src.data_manipulation.normalization.mix_bass_data_normalizer import (
+from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
     Normalizer,
 )
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis

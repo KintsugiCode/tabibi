@@ -1,5 +1,5 @@
 def test(x_test, y_test, model, criterion):
-    print("@@@@@@ Starting model testing @@@@@@")
+    print("@@@@ Starting model testing @@@@")
     # Switch the model to evaluation mode to turn off features like dropout
     model.eval()
 
@@ -7,9 +7,9 @@ def test(x_test, y_test, model, criterion):
     y_pred, _ = model(x_test)
 
     test_loss = criterion(y_pred, y_test)
-    print(f"Test loss: {test_loss.item():.7f}")
+    print(f"@@@@ Test loss: {test_loss.item():.7f} @@@@")
 
-    # Convert tensor back into numpy array and then back to audio
+    # Convert tensor back into numpy array
     y_pred = y_pred.detach().cpu().numpy()
 
     return y_pred
