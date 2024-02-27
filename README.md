@@ -9,6 +9,8 @@ This is the 1st release of tabibi, featuring GRU-based audio source separation a
 
 There are two ways to run tabibi. The first uses pre-trained models and is described in [General Usage](#general-usage), the second involves training your own models and is described in [Training Specific Usage](#training-specific-usage).
 
+This project was trained using the [DSD100](https://sigsep.github.io/datasets/dsd100.html) and [AAM](https://zenodo.org/records/5794629) datasets.
+
 
 ## Setup
 
@@ -103,49 +105,36 @@ The production pipeline is on a loop and runs once per audio track provided in t
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    ├── README.md          <-- The top-level README for developers using this project.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    ├── requirements.txt   <-- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
+    │ 
+    ├── src                
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
+    │   ├── __helpers__           <-- Utility helper functions
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   ├── config                <-- File-path constants and fourier-/hyper-parameters
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   ├── data                  <-- Processed and raw data used to train/test new models
     │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+    │   ├── data_manipulation     <-- The processes and helper functions needed to prepare data before 
+    │   │                             passing it to a model 
+    │   │
+    │   ├── models                <-- Model definitions, test/train functions, managers that control entire 
+    │   │                             train/test flow, and saved pre-trained models
+    │   │
+    │   ├── scripts               <-- Scripts used to prepare raw datasets for processing
+    │   │
+    │   ├── transformers          <-- Functions used to transform data from one datatype format to another
+    │   │
+    │   ├── visualization         <-- A collection of functions used to visualize input/output, manually 
+    │   │                             assess model efficiency, and simulate pipelines for manual evaluation 
+    │   │                             of data transformations
+    │   │
+    │   ├── main.py               <--- The main code to be run, differentiates between training and production 
+    │   │                              execution types and deligates accordingly
+
 
 ------------
 
