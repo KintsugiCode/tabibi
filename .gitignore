@@ -1,16 +1,26 @@
 
-# Datasets
-src/data/processed/test/model1/*
-src/data/processed/test/model2/*
-src/data/processed/train/model1/*
-src/data/processed/train/model2/*
-src/data/raw/model1/*
-src/data/raw/model2/*
+## Datasets
+# Ignore all files in these specific directories
+/src/data/processed/test/model1/*
+/src/data/processed/test/model2/*
+/src/data/processed/train/model1/*
+/src/data/processed/train/model2/*
+/src/data/raw/model1/*
+/src/data/raw/model2/*
+
+# Except the directory structures
+!/src/data/processed/test/model1/.gitkeep
+!/src/data/processed/test/model2/.gitkeep
+!/src/data/processed/train/model1/.gitkeep
+!/src/data/processed/train/model2/.gitkeep
+!/src/data/raw/model1/.gitkeep
+!/src/data/raw/model2/.gitkeep
+
 src/transformers/__tests__/test_data/*
 src/data_manipulation/__tests__/test_data*
 
 
-# Visualized Output
+## Visualized Output
 src/visualization/audio/predicted_audio/*
 src/visualization/audio/trained_audio/*
 src/visualization/fourier_and_back_trial/audio/*
@@ -20,11 +30,11 @@ src/visualization/midi_to_piano_roll_and_back_trial/outputs/*
 src/visualization/midi_to_piano_roll_and_back_trial/data/*
 src/visualization/midi/predicted_midi/*
 
-# Testing Audio
+## Testing Audio
 src/test_audio
 
 
-# Distribution / packaging
+## Distribution / packaging
 .Python
 env/
 build/
@@ -45,7 +55,7 @@ var/
 
 
 
-# Unit test / coverage reports
+## Unit test / coverage reports
 htmlcov/
 .tox/
 .coverage
@@ -57,7 +67,7 @@ coverage.xml
 
 
 
-# DotEnv configuration
+## DotEnv configuration
 .env
 
 # Database
@@ -66,21 +76,19 @@ coverage.xml
 
 
 
-# VS Code
+## VS Code
 .vscode/
 
 
-# exclude data from source control by default
-/data/
 
-# Mac OS-specific storage files
+## Mac OS-specific storage files
 .DS_Store
 .idea
 __pycache__
 
-# vim
+## vim
 *.swp
 *.swo
 
-# venv
+## venv
 venv/
