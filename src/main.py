@@ -19,8 +19,8 @@ def main():
     choice = (
         input(
             "@@@@@@ Would you like to create new models before processing your audio? @@@@@@\n"
-            '@@@@@@ WARNING: Selecting "yes" requires training/testing datasets to be present in the data/raw/model1 and '
-            "data/raw/model2 folders. @@@@@@\n"
+            '@@@@@@ WARNING: Selecting "yes" requires training/testing datasets to be present in the data/raw/model1 '
+            "and data/raw/model2 folders. @@@@@@\n"
             '@@@@@@  Selecting "no" will use the pre-existing mark1 models instead. [Y/N]: @@@@@@ '
         )
         .strip()

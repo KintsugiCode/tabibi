@@ -1,6 +1,11 @@
 
 # Datasets
-src/data/*
+src/data/processed/test/model1/*
+src/data/processed/test/model2/*
+src/data/processed/train/model1/*
+src/data/processed/train/model2/*
+src/data/raw/model1/*
+src/data/raw/model2/*
 src/transformers/__tests__/test_data/*
 src/data_manipulation/__tests__/test_data*
 
