@@ -21,14 +21,24 @@ src/data_manipulation/__tests__/test_data*
 
 
 ## Visualized Output
+# Ignore all files in these specific directories
 src/visualization/audio/predicted_audio/*
 src/visualization/audio/trained_audio/*
 src/visualization/fourier_and_back_trial/audio/*
 src/visualization/spectrograms/outputs/*
-src/visualization/freq_time_analysis_trial/*
+src/visualization/freq_time_analysis_trial
 src/visualization/midi_to_piano_roll_and_back_trial/outputs/*
 src/visualization/midi_to_piano_roll_and_back_trial/data/*
 src/visualization/midi/predicted_midi/*
+
+# Except the .gitkeep files
+!src/visualization/audio/predicted_audio/.gitkeep
+!src/visualization/audio/trained_audio/.gitkeep
+!src/visualization/fourier_and_back_trial/audio/.gitkeep
+!src/visualization/spectrograms/outputs/.gitkeep
+!src/visualization/midi_to_piano_roll_and_back_trial/outputs/.gitkeep
+!src/visualization/midi_to_piano_roll_and_back_trial/data/.gitkeep
+!src/visualization/midi/predicted_midi/.gitkeep
 
 ## Testing Audio
 src/test_audio
