@@ -4,9 +4,6 @@ src/data/*
 src/transformers/__tests__/test_data/*
 src/data_manipulation/__tests__/test_data*
 
-# Models
-src/models/trained_models/*
-
 
 # Visualized Output
 src/visualization/audio/predicted_audio/*
