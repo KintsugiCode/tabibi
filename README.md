@@ -149,3 +149,13 @@ The production pipeline is on a loop and runs once per audio track provided in t
 
 ------------
 
+
+### To-Do
+- Transcription model outputs are currently lumped into the first few seconds - model fine-tuning should solve this.
+- Introduce distortion to the transcription model training to generalize better.
+- Superior error handling needs to be implemented.
+- Implement batch-sizes in case larger training datasets need to be used.
+- Revisit truncation/padding and find a solution that allows for using more time-steps of datapoints for training.
+- Expand the testing suite for better coverage, especially regarding file-paths.
+- Find a better solution to deal with all the paths needed.
+  
