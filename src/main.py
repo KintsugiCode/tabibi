@@ -16,14 +16,32 @@ PATH_TO_AUDIO = os.path.join(dir_path, PRODUCTION_FOLDER_BASE_PATH)
 
 def main():
 
-    # Trains and tests both models separately
-    print("@@@@@@ SEPARATION TRAINING/TESTING START @@@@@@")
-    separation_manager()
-    print()
-    print("@@@@@@ TRANSCRIPTION TRAINING/TESTING START @@@@@@")
-    transcription_manager()
-    print()
-    print("@@@@@@ MODELS SUCCESSFULLY CREATED @@@@@@")
+    choice = (
+        input(
+            "@@@@@@ Would you like to create new models before processing your audio? @@@@@@\n"
+            '@@@@@@ WARNING: Selecting "yes" requires training/testing datasets to be present in the data/raw/model1 '
+            "and data/raw/model2 folders. @@@@@@\n"
+            '@@@@@@  Selecting "no" will use the pre-existing mark1 models instead. [Y/N]:'
+        )
+        .strip()
+        .lower()
+    )
+
+    if choice in ["yes", "y"]:
+        # Trains and tests both models separately
+        print("@@@@@@ SEPARATION TRAINING/TESTING START @@@@@@")
+        separation_manager()
+        print()
+        print("@@@@@@ TRANSCRIPTION TRAINING/TESTING START @@@@@@")
+        transcription_manager()
+        print()
+        print("@@@@@@ MODELS SUCCESSFULLY CREATED @@@@@@")
+
+    elif choice in ["no", "n"]:
+        pass
+
+    else:
+        raise Exception("Please enter a valid input. Either [Y/N] or [Yes/No].")
 
     try:
         for track in os.listdir(f"{PATH_TO_AUDIO}/{PRODUCTION_INPUT_FOLDER_PATH}"):
@@ -49,7 +67,7 @@ def main():
                 output = use_models_on_audio(processed_input)
 
                 print("@@ Post-Processing... @@")
-                # Post-process the midi-spectrogram into pure midi format
+                # Post-process the midi-spectrogram into pure midi format and save it
                 piano_roll_to_midi(
                     piano_roll=output,
                     output_file_path=output_file_path,
@@ -57,8 +75,6 @@ def main():
                     mix_names=["mix_name"],
                     flag="production",
                 )
-
-                # Save finished output
 
             else:
                 print(f"@@@@ {track} is not a .wav file. Skipping... @@@@")
