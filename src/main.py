@@ -49,7 +49,7 @@ def main():
                 output = use_models_on_audio(processed_input)
 
                 print("@@ Post-Processing... @@")
-                # Post-process the midi-spectrogram into pure midi format
+                # Post-process the midi-spectrogram into pure midi format and save it
                 piano_roll_to_midi(
                     piano_roll=output,
                     output_file_path=output_file_path,
@@ -57,8 +57,6 @@ def main():
                     mix_names=["mix_name"],
                     flag="production",
                 )
-
-                # Save finished output
 
             else:
                 print(f"@@@@ {track} is not a .wav file. Skipping... @@@@")
