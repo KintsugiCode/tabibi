@@ -15,37 +15,40 @@ PATH_TO_AUDIO = os.path.join(dir_path, PRODUCTION_FOLDER_BASE_PATH)
 
 
 def main():
-
-    choice = (
-        input(
-            "@@@@@@ Would you like to create new models before processing your audio? @@@@@@\n"
-            '@@@@@@ WARNING: Selecting "yes" requires training/testing datasets to be present in the data/raw/model1 '
-            "and data/raw/model2 folders. @@@@@@\n"
-            '@@@@@@  Selecting "no" will use the pre-existing mark1 models instead. [Y/N]:'
+    while True:
+        choice = (
+            input(
+                "@@@@@@ Would you like to create new models before processing your audio? @@@@@@\n"
+                '@@@@@@ WARNING: Selecting "yes" requires training/testing datasets to be present in the '
+                "data/raw/model1 and data/raw/model2 folders. @@@@@@\n"
+                '@@@@@@  Selecting "no" will use the pre-existing mark1 models instead. [Y/N]:'
+            )
+            .strip()
+            .lower()
         )
-        .strip()
-        .lower()
-    )
 
-    if choice in ["yes", "y"]:
-        # Trains and tests both models separately
-        print("@@@@@@ SEPARATION TRAINING/TESTING START @@@@@@")
-        separation_manager()
-        print()
-        print("@@@@@@ TRANSCRIPTION TRAINING/TESTING START @@@@@@")
-        transcription_manager()
-        print()
-        print("@@@@@@ MODELS SUCCESSFULLY CREATED @@@@@@")
+        if choice in ["yes", "y"]:
+            # Trains and tests both models separately
+            print()
+            print("@@@@@@ SEPARATION TRAINING/TESTING START @@@@@@")
+            separation_manager()
+            print()
+            print("@@@@@@ TRANSCRIPTION TRAINING/TESTING START @@@@@@")
+            transcription_manager()
+            print()
+            print("@@@@@@ MODELS SUCCESSFULLY CREATED @@@@@@")
+            break
 
-    elif choice in ["no", "n"]:
-        pass
+        elif choice in ["no", "n"]:
+            break
 
-    else:
-        raise Exception("Please enter a valid input. Either [Y/N] or [Yes/No].")
+        else:
+            print("Please enter a valid input. Either [Y/N] or [Yes/No].")
 
     try:
         for track in os.listdir(f"{PATH_TO_AUDIO}/{PRODUCTION_INPUT_FOLDER_PATH}"):
             if track.endswith(".wav"):
+                print()
                 print(f"@@@@ USING MODELS ON SELECTED TRACK: {track} @@@@")
                 input_file_path = (
                     f"{PATH_TO_AUDIO}/{PRODUCTION_INPUT_FOLDER_PATH}/{track}"
