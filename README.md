@@ -151,6 +151,7 @@ The production pipeline is on a loop and runs once per audio track provided in t
 
 
 ### To-Do
+- Both models currently output poor results. Areas that need improvement are generalization and possibly model complexity (e.g. tracking audio phases, etc.)
 - Transcription model outputs are currently lumped into the first few seconds - model fine-tuning should solve this.
 - Introduce distortion to the transcription model training to generalize better.
 - Superior error handling needs to be implemented.
