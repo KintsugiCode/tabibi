@@ -46,7 +46,11 @@ def main():
             print("Please enter a valid input. Either [Y/N] or [Yes/No].")
 
     try:
-        for track in os.listdir(f"{PATH_TO_AUDIO}/{PRODUCTION_INPUT_FOLDER_PATH}"):
+        input_folder = f"{PATH_TO_AUDIO}/{PRODUCTION_INPUT_FOLDER_PATH}"
+        if not os.listdir(input_folder):
+            print("No input files present in input folder. Programm terminated.")
+            return
+        for track in os.listdir(f"{input_folder}"):
             if track.endswith(".wav"):
                 print()
                 print(f"@@@@ USING MODELS ON SELECTED TRACK: {track} @@@@")
@@ -82,7 +86,9 @@ def main():
             else:
                 print(f"@@@@ {track} is not a .wav file. Skipping... @@@@")
     except Exception as e:
-        raise Exception(f"No input files present in input folder: {e}")
+        raise Exception(
+            f"An error occurred while processing the production audio files: {e}"
+        )
 
 
 if __name__ == "__main__":
