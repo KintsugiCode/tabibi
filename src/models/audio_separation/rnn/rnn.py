@@ -32,10 +32,10 @@ class RNN(nn.Module):
         """
         `x` is the batch of sequences that you want your RNN to process.
 
-        `x` has a shape of `(batch_size, seq_length, num_features)`:
+        `x` has a shape of `(batch_size, num_features, seq_length)`:
             - `batch_size` is the number of sequences you process at a time.
-            - `seq_length` is the length of each sequence.
             - `num_features` is the number of input features at each sequence element.
+            - `seq_length` is the length of each sequence.
         """
         batch_size = x.size(0)
 
