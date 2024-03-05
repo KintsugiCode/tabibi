@@ -30,10 +30,10 @@ class GRU_Separation(nn.Module):
         """
         `x` is the batch of sequences that you want your RNN to process.
 
-        `x` has a shape of `(batch_size, num_features, seq_length)`:
+        `x` has a shape of `(batch_size, seq_length, num_features)`:
             - `batch_size` is the number of sequences you process at a time.
-            - `num_features` is the number of input features at each sequence element.
             - `seq_length` is the length of each sequence.
+            - `num_features` is the number of input features at each sequence element.
         """
         batch_size = x.size(0)
 
