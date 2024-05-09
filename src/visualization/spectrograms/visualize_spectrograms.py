@@ -40,7 +40,7 @@ def visualize_spectrograms(
         hop_length=hop_length,
     )
     plt.colorbar(format="%+2.0f dB")
-    plt.title(f"Mel spectrogram - x_train - {mix_name[0]}")
+    plt.title(f"Mel spectrogram - x_train - {mix_name[0]} - Mixed Audio")
     plt.tight_layout()
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-x_train.png")
 
@@ -55,7 +55,7 @@ def visualize_spectrograms(
         hop_length=hop_length,
     )
     plt.colorbar(format="%+2.0f dB")
-    plt.title(f"Mel spectrogram - {mix_name[0]}")
+    plt.title(f"Mel spectrogram - {mix_name[0]} - Bass Audio")
     plt.tight_layout()
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-y_train.png")
 
@@ -70,6 +70,6 @@ def visualize_spectrograms(
         hop_length=hop_length,
     )
     plt.colorbar(format="%+2.0f dB")
-    plt.title(f"Mel spectrogram - {mix_name[0]}")
+    plt.title(f"Mel spectrogram - {mix_name[0]} - Bass Audio predicted")
     plt.tight_layout()
     plt.savefig(f"{save_folder_path}/{tag}-spectrogram-y_train_output.png")
