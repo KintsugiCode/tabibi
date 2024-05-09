@@ -69,7 +69,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
                 y_train,
                 data_train,
                 tag=f"{tag}-TRAINING",
-                flag=False,
+                flag=True,
             )
 
         # Check if loss is not changing anymore
@@ -89,7 +89,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
                 y_train,
                 data_train,
                 tag=f"{tag}-TRAINING",
-                flag=False,
+                flag=True,
             )
             break
 

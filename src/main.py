@@ -15,80 +15,11 @@ PATH_TO_AUDIO = os.path.join(dir_path, PRODUCTION_FOLDER_BASE_PATH)
 
 
 def main():
-    while True:
-        choice = (
-            input(
-                "@@@@@@ Would you like to create new models before processing your audio? @@@@@@\n"
-                '@@@@@@ WARNING: Selecting "yes" requires training/testing datasets to be present in the '
-                "data/raw/model1 and data/raw/model2 folders. @@@@@@\n"
-                '@@@@@@  Selecting "no" will use the pre-existing mark1 models instead. [Y/N]:'
-            )
-            .strip()
-            .lower()
-        )
 
-        if choice in ["yes", "y"]:
-            # Trains and tests both models separately
-            print()
-            print("@@@@@@ SEPARATION TRAINING/TESTING START @@@@@@")
-            separation_manager()
-            print()
-            print("@@@@@@ TRANSCRIPTION TRAINING/TESTING START @@@@@@")
-            transcription_manager()
-            print()
-            print("@@@@@@ MODELS SUCCESSFULLY CREATED @@@@@@")
-            break
-
-        elif choice in ["no", "n"]:
-            break
-
-        else:
-            print("Please enter a valid input. Either [Y/N] or [Yes/No].")
-
-    try:
-        input_folder = f"{PATH_TO_AUDIO}/{PRODUCTION_INPUT_FOLDER_PATH}"
-        if not os.listdir(input_folder):
-            print("No input files present in input folder. Programm terminated.")
-            return
-        for track in os.listdir(f"{input_folder}"):
-            if track.endswith(".wav"):
-                print()
-                print(f"@@@@ USING MODELS ON SELECTED TRACK: {track} @@@@")
-                input_file_path = (
-                    f"{PATH_TO_AUDIO}/{PRODUCTION_INPUT_FOLDER_PATH}/{track}"
-                )
-                output_file_path = (
-                    f"{PATH_TO_AUDIO}/{PRODUCTION_OUTPUT_FOLDER_PATH}/{track}"
-                )
-
-                print("@@ Pre-Processing... @@")
-                # Pre-process the audio into correct spectrogram format
-                processed_input = transform_data(
-                    flag="production input",
-                    file_name=track,
-                    input_file_path=input_file_path,
-                )
-
-                print("@@ Separating and transcribing... @@")
-                # Pass processed audio through both models
-                output = use_models_on_audio(processed_input)
-
-                print("@@ Post-Processing... @@")
-                # Post-process the midi-spectrogram into pure midi format and save it
-                piano_roll_to_midi(
-                    piano_roll=output,
-                    output_file_path=output_file_path,
-                    tag="",
-                    mix_names=["mix_name"],
-                    flag="production",
-                )
-
-            else:
-                print(f"@@@@ {track} is not a .wav file. Skipping... @@@@")
-    except Exception as e:
-        raise Exception(
-            f"An error occurred while processing the production audio files: {e}"
-        )
+    print("@@@@@@ SEPARATION TRAINING/TESTING START @@@@@@")
+    separation_manager()
+    print()
+    print("@@@@@@ MODEL SUCCESSFULLY CREATED @@@@@@")
 
 
 if __name__ == "__main__":

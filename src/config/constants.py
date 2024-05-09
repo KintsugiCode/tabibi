@@ -38,7 +38,11 @@ MODEL2_TEST_FILE_PATH = (
 TRAINED_MODEL2_SAVE_PATH = "../models/trained_models/transcription/mark1.pt"
 
 # Visualisation and Testing constants
-TRAINED_AUDIO_FILE_PATH = "../visualization/audio/trained_audio"
-PRED_AUDIO_FILE_PATH = "../visualization/audio/predicted_audio"
-VISUALIZATION_SAVE_PATH = "../visualization/spectrograms/outputs"
+TRAINED_AUDIO_FILE_PATH = (
+    "../../../../Bachelor Thesis/thesis/audio outputs/trained audio"
+)
+PRED_AUDIO_FILE_PATH = (
+    "../../../../Bachelor Thesis/thesis/audio outputs/predicted audio"
+)
+VISUALIZATION_SAVE_PATH = "../../../../Bachelor Thesis/thesis/spectrograms"
 PRED_MIDI_FILE_PATH = "../visualization/midi/predicted_midi"

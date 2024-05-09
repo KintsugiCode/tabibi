@@ -30,8 +30,28 @@ with open(hyperparameters_path) as hyperparameters_file:
 
 
 def separation_manager():
-    # Transform training/testing data for audio separation
-    transform_data(flag="audio separation")
+    while True:
+        choice = (
+            input(
+                "@@@@@@ Would you like to pre-process the data or use the existing pre-processed data?[Y/N]:"
+            )
+            .strip()
+            .lower()
+        )
+
+        if choice in ["yes", "y"]:
+            # Transform training/testing data for audio separation
+            print()
+            print("@@@@@@ DATA PRE-PROCESSING START @@@@@@")
+            transform_data(flag="audio separation")
+
+            break
+
+        elif choice in ["no", "n"]:
+            break
+
+        else:
+            print("Please enter a valid input. Either [Y/N] or [Yes/No].")
 
     # Load the training dataset
     print("@@@@ Loading the training dataset @@@@")
