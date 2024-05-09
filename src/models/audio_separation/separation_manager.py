@@ -33,13 +33,13 @@ def separation_manager():
     while True:
         choice = (
             input(
-                "@@@@@@ Would you like to pre-process the data or use the existing pre-processed data?[Y/N]:"
+                "@@@@@@ Would you like to pre-process the data [1] or use the existing pre-processed data [2]?:"
             )
             .strip()
             .lower()
         )
 
-        if choice in ["yes", "y"]:
+        if choice in ["1"]:
             # Transform training/testing data for audio separation
             print()
             print("@@@@@@ DATA PRE-PROCESSING START @@@@@@")
@@ -47,11 +47,11 @@ def separation_manager():
 
             break
 
-        elif choice in ["no", "n"]:
+        elif choice in ["2"]:
             break
 
         else:
-            print("Please enter a valid input. Either [Y/N] or [Yes/No].")
+            print("Please enter a valid input. Either [1] or [2].")
 
     # Load the training dataset
     print("@@@@ Loading the training dataset @@@@")
