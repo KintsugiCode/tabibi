@@ -24,8 +24,9 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
     else:
         raise Exception("Incorrect tag")
 
-    # Track loss to break training loop if loss is no longer changing
+    # Track loss to break training loop if loss is no longer changing or increasing
     no_change = 0
+    loss_increasing = False
     prev_loss = float("inf")
 
     # Track learning rate reduction
@@ -78,7 +79,28 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         else:
             no_change = 0
 
+        # Check if the loss over the last 5 epochs has been larger than its previous loss
+        if loss.item() > prev_loss:
+            loss_increasing += 1
+        else:
+            loss_increasing = 0
+
         prev_loss = loss.item()
+
+        # If loss has started increasing, stop early
+        if loss_increasing >= 5:
+            print(
+                "@@@@@@ Stopping early - loss has increased too many times in a row. @@@@@@ "
+            )
+            visualize_for_evaluation(
+                outputs,
+                x_train,
+                y_train,
+                data_train,
+                tag=f"{tag}-TRAINING",
+                flag=True,
+            )
+            break
 
         # If loss hasn't changed for 30 epochs, stop early
         if no_change >= 30:
