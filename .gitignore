@@ -1,4 +1,8 @@
 
+## Trained Models
+/src/models/trained_models/separation/*
+/src/models/trained_models/transcription/*
+
 ## Datasets
 # Ignore all files in these specific directories
 /src/data/processed/test/model1/*
