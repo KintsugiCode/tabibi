@@ -15,16 +15,20 @@ class GRU_Separation(nn.Module):
         # Dropout rate
         self.dropout_rate = dropout_rate
 
-        # GRU
-        self.gru = nn.GRU(input_size, hidden_dim, n_layers, batch_first=True)
+        # Bi-Directional GRU
+        self.gru = nn.GRU(
+            input_size, hidden_dim, n_layers, batch_first=True, bidirectional=True
+        )
 
         # Dropout layer
         self.dropout = nn.Dropout(dropout_rate)
 
         # Readout layers
-        self.fc1 = nn.Linear(hidden_dim, hidden_dim * 2)
-        self.fc2 = nn.Linear(hidden_dim * 2, hidden_dim * 4)
-        self.fc3 = nn.Linear(hidden_dim * 4, output_size)
+        self.fc1 = nn.Linear(self.hidden_dim * 2, self.hidden_dim * 2)
+        self.layer_norm1 = nn.LayerNorm(self.hidden_dim * 2)
+        self.fc2 = nn.Linear(self.hidden_dim * 2, self.hidden_dim * 4)
+        self.layer_norm2 = nn.LayerNorm(self.hidden_dim * 4)
+        self.fc3 = nn.Linear(self.hidden_dim * 4, output_size)
 
     def forward(self, x):
         """
@@ -47,15 +51,19 @@ class GRU_Separation(nn.Module):
         out = self.dropout(out)
 
         out = self.fc1(out)
-        out = torch.relu(out)
+        out = torch.relu(self.layer_norm1(out.view(-1, out.size(2))))
+        out = out.view(batch_size, -1, self.hidden_dim * 2)
+
         out = self.fc2(out)
-        out = torch.relu(out)
+        out = torch.relu(self.layer_norm2(out.view(-1, out.size(2))))
+        out = out.view(batch_size, -1, self.hidden_dim * 4)
+
         out = self.fc3(out)
 
         return out, hidden_j
 
     def init_hidden(self, batch_size):
         # Generates the first hidden state of zeros for the forward pass
-        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_dim)
+        hidden = torch.zeros(self.n_layers * 2, batch_size, self.hidden_dim)
 
         return hidden

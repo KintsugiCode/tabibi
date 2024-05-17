@@ -107,7 +107,7 @@ def separation_manager():
     # Choose a loss function and an optimizer
     criterion = nn.L1Loss()
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=1e-6
+        model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=1e-5
     )
 
     # Train the model

@@ -11,7 +11,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 with open("../../config/fourierparameters.json") as fourierparameters_file:
     fourierparameters = json.load(fourierparameters_file)
 
-INPUT_FILE_PATH = "audio/MusicDelta_80sRock/Bass/MusicDelta_80sRock_STEM_02.wav"
+INPUT_FILE_PATH = "audio/Track25.wav"
 
 
 def fourier_audio_loss(file_path):
@@ -34,11 +34,14 @@ def fourier_audio_loss(file_path):
 
         freq_time_analysis_to_audio(
             mel_spectrogram_array=t_dict["x"],
-            output_file_path="audio/",
-            mix_names=["MusicDelta_80sRock_MIX.wav"],
+            output_file_path="audio",
+            mix_names=["Track25.wav"],
             min_max_amplitudes=t_dict["min_max_amplitudes"],
-            tag="TRIAL-",
+            tag="TRIAL",
         )
 
     except Exception as e:
         raise Exception("Exception occurred: {}".format(e))
+
+
+fourier_audio_loss(INPUT_FILE_PATH)

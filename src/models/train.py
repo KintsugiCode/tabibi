@@ -1,6 +1,8 @@
 import json
 import os
 import torch.optim.lr_scheduler as lr_scheduler
+from torch.utils.tensorboard import SummaryWriter
+import torch.nn.utils.clip_grad
 from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
 from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
 
@@ -18,6 +20,7 @@ with open(hyperparameters_transcription_path) as hyperparameters_file:
 
 
 def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
+    writer = SummaryWriter(log_dir=os.path.join(dir_path, "../logs/tensorboard_logs"))
     if tag == "separation":
         hyperparameters = hyperparameters_separation
     elif tag == "transcription":
@@ -27,7 +30,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
 
     # Create the lr scheduler
     scheduler = lr_scheduler.ReduceLROnPlateau(
-        optimizer, "min", patience=5, factor=0.5, verbose=True
+        optimizer, "min", patience=4, factor=0.6, verbose=True
     )
 
     # Track loss to break training loop if loss is no longer changing or increasing
@@ -59,8 +62,21 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
 
         # Backward pass (backpropagation) where gradients are calculated
         loss.backward()
+
+        # Gradient clipping
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
         # Update model parameters, based on the gradients calculated in the backward pass
         optimizer.step()
+
+        # TensorBoard Logging
+        writer.add_scalar("Loss/train", loss.item(), epoch)
+
+        # Log parameter and gradient histograms
+        for name, param in model.named_parameters():
+            writer.add_histogram(f"Params/{name}", param, epoch)
+            if param.grad is not None:
+                writer.add_histogram(f"Grads/{name}", param.grad, epoch)
 
         # Print statistics
         print(f"@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@")
@@ -94,7 +110,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         prev_loss = loss.item()
 
         # If loss has started increasing, stop early
-        if loss_increasing >= 5:
+        if loss_increasing >= 10:
             print(
                 "@@@@@@ Stopping early - loss has increased too many times in a row. @@@@@@ "
             )
@@ -120,5 +136,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
                 flag=True,
             )
             break
+
+    writer.close()
 
     return model
