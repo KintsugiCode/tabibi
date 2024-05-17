@@ -3,8 +3,8 @@ import soundfile as sf
 import json
 import os
 
-from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
-    Normalizer,
+from src.data_manipulation.__helpers__.normalization.decibel_normalizer import (
+    DecibelNormalizer,
 )
 from scipy.signal import butter, lfilter
 
@@ -40,7 +40,7 @@ def freq_time_analysis_to_audio(
         for track in range(mel_spectrogram_array.shape[0]):
             track_counter += 1
             min_val, max_val = min_max_amplitudes
-            mel_spectrogram_array[track] = Normalizer(
+            mel_spectrogram_array[track] = DecibelNormalizer(
                 mel_spectrogram_array[track]
             ).denormalize(min_val, max_val)
             print(f"@@@@ Recreating audio of track {track} @@@@")

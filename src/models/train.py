@@ -1,5 +1,6 @@
 import json
 import os
+import torch.optim.lr_scheduler as lr_scheduler
 from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
 from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
 
@@ -23,6 +24,11 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         hyperparameters = hyperparameters_transcription
     else:
         raise Exception("Incorrect tag")
+
+    # Create the lr scheduler
+    scheduler = lr_scheduler.ReduceLROnPlateau(
+        optimizer, "min", patience=5, factor=0.5, verbose=True
+    )
 
     # Track loss to break training loop if loss is no longer changing or increasing
     no_change = 0
@@ -59,8 +65,8 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         # Print statistics
         print(f"@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@")
 
-        # Reduce learning rate if necessary
-        lr_reduced, optimizer = learning_rate_reducer(loss, optimizer, lr_reduced)
+        # Update the scheduler with the current loss
+        scheduler.step(loss.item())
 
         # Visualizations and audio-transforms for manual evaluation
         if epoch == hyperparameters["n_epochs"] - 1:

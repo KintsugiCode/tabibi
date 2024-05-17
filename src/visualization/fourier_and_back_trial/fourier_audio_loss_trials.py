@@ -1,7 +1,7 @@
 import json
 import os
-from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
-    Normalizer,
+from src.data_manipulation.__helpers__.normalization.decibel_normalizer import (
+    DecibelNormalizer,
 )
 from src.transformers.audio_to_freq_time_analysis import audio_to_freq_time_analysis
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
@@ -25,7 +25,7 @@ def fourier_audio_loss(file_path):
 
         t_dict["x"].append(mel_spectrogram)
 
-        norm_x = Normalizer(t_dict["x"])
+        norm_x = DecibelNormalizer(t_dict["x"])
         t_dict["x"], t_dict["min_max_amplitudes"] = (
             norm_x.normalize(),
             norm_x.get_min_max(),
