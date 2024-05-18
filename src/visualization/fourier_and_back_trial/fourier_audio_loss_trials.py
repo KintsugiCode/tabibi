@@ -11,7 +11,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 with open("../../config/fourierparameters.json") as fourierparameters_file:
     fourierparameters = json.load(fourierparameters_file)
 
-INPUT_FILE_PATH = "audio/Bass56.wav"
+INPUT_FILE_PATH = "audio/Track56.wav"
 
 
 def fourier_audio_loss(file_path):
@@ -35,7 +35,7 @@ def fourier_audio_loss(file_path):
         freq_time_analysis_to_audio(
             mel_spectrogram_array=t_dict["x"],
             output_file_path="audio",
-            mix_names=["Bass56.wav"],
+            mix_names=["Track56.wav"],
             min_max_amplitudes=t_dict["x_min_max_amplitudes"],
             tag="TRIAL",
         )

@@ -44,9 +44,12 @@ def audio_to_freq_time_analysis(file_path, flag=False):
         hop_length = fourierparameters["hop_length"]
         n_fft = fourierparameters["n_fft"]
         n_mels = fourierparameters["n_mels"]
+        win_length = fourierparameters["n_fft"]
 
         # Perform stft
-        stft = librosa.stft(signal, n_fft=n_fft, hop_length=hop_length)
+        stft = librosa.stft(
+            signal, n_fft=n_fft, hop_length=hop_length, win_length=win_length
+        )
 
         # Calculate abs values on complex numbers to get magnitude
         mag_spectrogram, phase = librosa.magphase(stft)

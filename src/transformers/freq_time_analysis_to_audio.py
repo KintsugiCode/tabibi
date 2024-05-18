@@ -41,8 +41,6 @@ def freq_time_analysis_to_audio(
             track_counter += 1
             min_val, max_val = min_max_amplitudes
 
-            print(f"min/max values stored: {min_val}, max: {max_val}")
-
             mel_spectrogram_array[track] = DecibelNormalizer(
                 mel_spectrogram_array[track]
             ).denormalize(min_val, max_val)
@@ -55,19 +53,17 @@ def freq_time_analysis_to_audio(
                 power=1.0,
             )
 
-            # Log spectrogram details
-            print(f"Reconstructed STFT shape: {spectrogram_array.shape}")
-
             # Inverts stft whilst estimating phase -- is much clearer than librosa.istft
             audio = librosa.griffinlim(
                 spectrogram_array[track],
                 hop_length=fourierparameters["hop_length"],
                 win_length=fourierparameters["n_fft"],
                 n_fft=fourierparameters["n_fft"],
+                n_iter=128,
             )
 
             audio = lowpass_filter(
-                audio, cutoff=1500, sr=fourierparameters["sample_rate"]
+                audio, cutoff=2500, sr=fourierparameters["sample_rate"]
             )
 
             # Save the audio to file

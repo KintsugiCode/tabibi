@@ -20,7 +20,9 @@ with open(hyperparameters_transcription_path) as hyperparameters_file:
 
 
 def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
-    writer = SummaryWriter(log_dir=os.path.join(dir_path, "../logs/tensorboard_logs"))
+    # TensorBoard Logging
+    writer = SummaryWriter(log_dir=os.path.join(dir_path, "../logs/tensorboard_logs/"))
+
     if tag == "separation":
         hyperparameters = hyperparameters_separation
     elif tag == "transcription":
@@ -30,7 +32,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
 
     # Create the lr scheduler
     scheduler = lr_scheduler.ReduceLROnPlateau(
-        optimizer, "min", patience=4, factor=0.6, verbose=True
+        optimizer, "min", patience=4, factor=0.5, verbose=True
     )
 
     # Track loss to break training loop if loss is no longer changing or increasing
@@ -64,7 +66,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         loss.backward()
 
         # Gradient clipping
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.5)
 
         # Update model parameters, based on the gradients calculated in the backward pass
         optimizer.step()
