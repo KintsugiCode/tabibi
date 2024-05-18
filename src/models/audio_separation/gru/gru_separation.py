@@ -30,6 +30,9 @@ class GRU_Separation(nn.Module):
         self.layer_norm2 = nn.LayerNorm(self.hidden_dim * 4)
         self.fc3 = nn.Linear(self.hidden_dim * 4, output_size)
 
+        # Sigmoid activation for output bounding between 0 and 1.
+        self.sigmoid = nn.Sigmoid()
+
     def forward(self, x):
         """
         `x` is the batch of sequences that you want your RNN to process.
@@ -59,6 +62,9 @@ class GRU_Separation(nn.Module):
         out = out.view(batch_size, -1, self.hidden_dim * 4)
 
         out = self.fc3(out)
+
+        # Apply sigmoid activation to bound the outputs between 0 and 1
+        out = self.sigmoid(out)
 
         return out, hidden_j
 

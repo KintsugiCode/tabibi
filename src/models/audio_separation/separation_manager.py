@@ -105,7 +105,7 @@ def separation_manager():
     )
 
     # Choose a loss function and an optimizer
-    criterion = nn.L1Loss()
+    criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(
         model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=1e-5
     )
@@ -127,6 +127,6 @@ def separation_manager():
         mel_spectrogram_array=y_pred[:3],
         output_file_path=PRED_AUDIO_FILE_PATH,
         mix_names=data_test["mix_name"],
-        min_max_amplitudes=data_test["min_max_amplitudes"],
+        min_max_amplitudes=data_test["y_min_max_amplitudes"],
         tag="SEPARATION-TESTING",
     )

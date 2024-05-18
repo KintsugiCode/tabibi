@@ -115,10 +115,10 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
                 "@@@@@@ Stopping early - loss has increased too many times in a row. @@@@@@ "
             )
             visualize_for_evaluation(
-                outputs,
-                x_train,
-                y_train,
-                data_train,
+                outputs=outputs,
+                x=x_train,
+                y=y_train,
+                data=data_train,
                 tag=f"{tag}-TRAINING",
                 flag=True,
             )

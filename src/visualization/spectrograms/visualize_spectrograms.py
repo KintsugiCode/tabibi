@@ -31,13 +31,18 @@ def visualize_spectrograms(
 
     print("@@@@ Creating x_train spectrogram @@@@")
     plt.figure(figsize=(10, 4))
+    db_spectrogram = librosa.amplitude_to_db(
+        mel_spectrogram_x_train, ref=np.max(mel_spectrogram_x_train)
+    )
     librosa.display.specshow(
-        librosa.power_to_db(mel_spectrogram_x_train, ref=np.max),
+        db_spectrogram,
         y_axis="mel",
         fmax=8000,
-        x_axis="time",
+        x_axis="s",
         sr=sr,
         hop_length=hop_length,
+        vmin=np.min(db_spectrogram),
+        vmax=np.max(db_spectrogram),
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - x_train - {mix_name[0]} - Mixed Audio")
@@ -46,13 +51,18 @@ def visualize_spectrograms(
 
     print("@@@@ Creating y_train spectrogram @@@@")
     plt.figure(figsize=(10, 4))
+    db_spectrogram = librosa.amplitude_to_db(
+        mel_spectrogram_y_train, ref=np.max(mel_spectrogram_y_train)
+    )
     librosa.display.specshow(
-        librosa.power_to_db(mel_spectrogram_y_train, ref=np.max),
+        db_spectrogram,
         y_axis="mel",
         fmax=8000,
-        x_axis="time",
+        x_axis="s",
         sr=sr,
         hop_length=hop_length,
+        vmin=np.min(db_spectrogram),
+        vmax=np.max(db_spectrogram),
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]} - Bass Audio")
@@ -61,13 +71,18 @@ def visualize_spectrograms(
 
     print("@@@@ Creating y_train_output spectrogram @@@@")
     plt.figure(figsize=(10, 4))
+    db_spectrogram = librosa.amplitude_to_db(
+        mel_spectrogram_y_train_output, ref=np.max(mel_spectrogram_y_train_output)
+    )
     librosa.display.specshow(
-        librosa.power_to_db(mel_spectrogram_y_train_output, ref=np.max),
+        db_spectrogram,
         y_axis="mel",
         fmax=8000,
-        x_axis="time",
+        x_axis="s",
         sr=sr,
         hop_length=hop_length,
+        vmin=np.min(db_spectrogram),
+        vmax=np.max(db_spectrogram),
     )
     plt.colorbar(format="%+2.0f dB")
     plt.title(f"Mel spectrogram - {mix_name[0]} - Bass Audio predicted")

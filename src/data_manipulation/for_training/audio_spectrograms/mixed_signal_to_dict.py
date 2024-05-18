@@ -112,15 +112,11 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=Fa
 
         # Normalize the data
         norm_x = DecibelNormalizer(t_dict["x"])
-        t_dict["x"], t_dict["min_max_amplitudes"] = (
-            norm_x.normalize(),
-            norm_x.get_min_max(),
-        )
+        t_dict["x"] = norm_x.normalize()
+        t_dict["x_min_max_amplitudes"] = norm_x.get_min_max()
         norm_y = DecibelNormalizer(t_dict["y"])
-        t_dict["y"], t_dict["min_max_amplitudes"] = (
-            norm_y.normalize(),
-            norm_y.get_min_max(),
-        )
+        t_dict["y"] = norm_y.normalize()
+        t_dict["y_min_max_amplitudes"] = norm_y.get_min_max()
 
         # Transform to recarray
         t_dict_recarray = convert_to_recarray(data_dict=t_dict)

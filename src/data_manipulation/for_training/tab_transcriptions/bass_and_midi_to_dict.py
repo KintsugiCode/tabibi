@@ -96,7 +96,7 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=F
 
         # Normalize the data
         norm_x = DecibelNormalizer(t_dict["x"])
-        t_dict["x"], t_dict["min_max_amplitudes"] = (
+        t_dict["x"], t_dict["x_min_max_amplitudes"] = (
             norm_x.normalize(),
             norm_x.get_min_max(),
         )
