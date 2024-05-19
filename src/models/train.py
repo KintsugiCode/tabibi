@@ -4,7 +4,9 @@ import torch.optim.lr_scheduler as lr_scheduler
 from torch.utils.tensorboard import SummaryWriter
 import torch.nn.utils.clip_grad
 from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
-from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
+from src.models.__helpers__.visualize_for_training_evaluation import (
+    visualize_for_training_evaluation,
+)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 hyperparameters_separation_path = os.path.join(
@@ -88,7 +90,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
 
         # Visualizations and audio-transforms for manual evaluation
         if epoch == hyperparameters["n_epochs"] - 1:
-            visualize_for_evaluation(
+            visualize_for_training_evaluation(
                 outputs,
                 x_train,
                 y_train,
@@ -116,7 +118,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
             print(
                 "@@@@@@ Stopping early - loss has increased too many times in a row. @@@@@@ "
             )
-            visualize_for_evaluation(
+            visualize_for_training_evaluation(
                 outputs=outputs,
                 x=x_train,
                 y=y_train,
@@ -129,7 +131,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         # If loss hasn't changed for 30 epochs, stop early
         if no_change >= 30:
             print("@@@@@@ Stopping early - loss hasn't changed in 30 epochs. @@@@@@ ")
-            visualize_for_evaluation(
+            visualize_for_training_evaluation(
                 outputs,
                 x_train,
                 y_train,

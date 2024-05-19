@@ -107,7 +107,7 @@ def separation_manager():
     # Choose a loss function and an optimizer
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=1e-5
+        model.parameters(), lr=hyperparameters["learning_rate"], weight_decay=1e-6
     )
 
     # Train the model
@@ -120,7 +120,7 @@ def separation_manager():
     torch.save(model.state_dict(), TRAINED_MODEL1_SAVE_PATH)
 
     # Test the model
-    y_pred = test(x_test, y_test, model, criterion)
+    y_pred = test(x_test, y_test, model, criterion, data_test, tag="separation")
 
     # Convert first three tracks back to audio for review
     freq_time_analysis_to_audio(
