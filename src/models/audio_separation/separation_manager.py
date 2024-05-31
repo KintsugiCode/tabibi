@@ -16,6 +16,7 @@ from src.data_manipulation.__helpers__.truncator.mix_bass_data_truncator import 
     data_truncator,
 )
 from src.models.audio_separation.gru.gru_separation import GRU_Separation
+from src.models.audio_separation.rnn.rnn import RNN
 from src.models.test import test
 from src.models.train import train
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
@@ -96,7 +97,7 @@ def separation_manager():
     y_test = y_test.float()
 
     # Initialize the model
-    model = GRU_Separation(
+    model = RNN(
         input_size=x_train.shape[2],
         hidden_dim=hyperparameters["hidden_dim"],
         n_layers=hyperparameters["n_layers"],

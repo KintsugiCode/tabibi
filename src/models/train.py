@@ -34,7 +34,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
 
     # Create the lr scheduler
     scheduler = lr_scheduler.ReduceLROnPlateau(
-        optimizer, "min", patience=4, factor=0.5, verbose=True
+        optimizer, "min", patience=5, factor=0.5, verbose=True
     )
 
     # Track loss to break training loop if loss is no longer changing or increasing
@@ -96,7 +96,7 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
                 y_train,
                 data_train,
                 tag=f"{tag}-TRAINING",
-                flag=True,
+                flag=False,
             )
 
         # Check if loss is not changing anymore

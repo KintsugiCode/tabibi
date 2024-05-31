@@ -8,7 +8,7 @@ TRANSCRIPTION_MODEL_PATH = "../models/trained_models/transcription/mark1.pt"
 # ----------
 
 # Model 1 Constants
-MODEL1_SUBSET = "V6"
+MODEL1_SUBSET = "V5"
 MODEL1_BASE_PATH = f"../data/raw/model1/{MODEL1_SUBSET}"
 MODEL1_TRAIN_FOLDER_PATH = "../data/processed/train/model1"
 MODEL1_TRAIN_FILE_NAME = f"mix_bass_train_data_{MODEL1_SUBSET}-TRAIN"

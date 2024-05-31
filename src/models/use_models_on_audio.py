@@ -4,6 +4,7 @@ import torch
 
 from src.config.constants import SEPARATION_MODEL_PATH, TRANSCRIPTION_MODEL_PATH
 from src.models.audio_separation.gru.gru_separation import GRU_Separation
+from src.models.audio_separation.rnn.rnn import RNN
 from src.models.tab_transcription.gru.gru_transcription import GRU_Transcription
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -29,7 +30,7 @@ def use_models_on_audio(input_data):
     y_separation = y_separation.float()
 
     # Load trained separation model
-    separation_model = GRU_Separation(
+    separation_model = RNN(
         input_size=x_separation.shape[2],
         hidden_dim=hyperparameters_separation["hidden_dim"],
         n_layers=hyperparameters_separation["n_layers"],
