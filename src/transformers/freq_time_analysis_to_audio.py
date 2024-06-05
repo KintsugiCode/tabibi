@@ -3,8 +3,8 @@ import soundfile as sf
 import json
 import os
 
-from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
-    Normalizer,
+from src.data_manipulation.__helpers__.normalization.decibel_normalizer import (
+    DecibelNormalizer,
 )
 from scipy.signal import butter, lfilter
 
@@ -40,10 +40,12 @@ def freq_time_analysis_to_audio(
         for track in range(mel_spectrogram_array.shape[0]):
             track_counter += 1
             min_val, max_val = min_max_amplitudes
-            mel_spectrogram_array[track] = Normalizer(
+
+            mel_spectrogram_array[track] = DecibelNormalizer(
                 mel_spectrogram_array[track]
             ).denormalize(min_val, max_val)
-            print(f"@@@@ Recreating audio of track {track} @@@@")
+
+            print(f"@@@@ Recreating audio of track {mix_names[track]} @@@@")
             spectrogram_array = librosa.feature.inverse.mel_to_stft(
                 mel_spectrogram_array,
                 sr=fourierparameters["sample_rate"],
@@ -57,10 +59,11 @@ def freq_time_analysis_to_audio(
                 hop_length=fourierparameters["hop_length"],
                 win_length=fourierparameters["n_fft"],
                 n_fft=fourierparameters["n_fft"],
+                n_iter=128,
             )
 
             audio = lowpass_filter(
-                audio, cutoff=1500, sr=fourierparameters["sample_rate"]
+                audio, cutoff=2500, sr=fourierparameters["sample_rate"]
             )
 
             # Save the audio to file

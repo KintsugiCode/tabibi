@@ -15,25 +15,29 @@ class GRU_Separation(nn.Module):
         # Dropout rate
         self.dropout_rate = dropout_rate
 
-        # GRU
-        self.gru = nn.GRU(input_size, hidden_dim, n_layers, batch_first=True)
+        # Bi-Directional GRU
+        self.gru = nn.GRU(
+            input_size, hidden_dim, n_layers, batch_first=True, bidirectional=True
+        )
 
         # Dropout layer
         self.dropout = nn.Dropout(dropout_rate)
 
         # Readout layers
-        self.fc1 = nn.Linear(hidden_dim, hidden_dim * 2)
-        self.fc2 = nn.Linear(hidden_dim * 2, hidden_dim * 4)
-        self.fc3 = nn.Linear(hidden_dim * 4, output_size)
+        self.fc1 = nn.Linear(self.hidden_dim * 2, self.hidden_dim * 2)
+        self.layer_norm1 = nn.LayerNorm(self.hidden_dim * 2)
+        self.fc2 = nn.Linear(self.hidden_dim * 2, self.hidden_dim * 4)
+        self.layer_norm2 = nn.LayerNorm(self.hidden_dim * 4)
+        self.fc3 = nn.Linear(self.hidden_dim * 4, output_size)
+
+        # Sigmoid activation for output bounding between 0 and 1.
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         """
         `x` is the batch of sequences that you want your RNN to process.
 
-        `x` has a shape of `(batch_size, seq_length, num_features)`:
-            - `batch_size` is the number of sequences you process at a time.
-            - `seq_length` is the length of each sequence.
-            - `num_features` is the number of input features at each sequence element.
+        `x` has a shape of `(batch_size, freq_bins, time_steps)`
         """
         batch_size = x.size(0)
 
@@ -47,15 +51,22 @@ class GRU_Separation(nn.Module):
         out = self.dropout(out)
 
         out = self.fc1(out)
-        out = torch.relu(out)
+        out = torch.relu(self.layer_norm1(out.view(-1, out.size(2))))
+        out = out.view(batch_size, -1, self.hidden_dim * 2)
+
         out = self.fc2(out)
-        out = torch.relu(out)
+        out = torch.relu(self.layer_norm2(out.view(-1, out.size(2))))
+        out = out.view(batch_size, -1, self.hidden_dim * 4)
+
         out = self.fc3(out)
+
+        # Apply sigmoid activation to bound the outputs between 0 and 1
+        out = self.sigmoid(out)
 
         return out, hidden_j
 
     def init_hidden(self, batch_size):
         # Generates the first hidden state of zeros for the forward pass
-        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_dim)
+        hidden = torch.zeros(self.n_layers * 2, batch_size, self.hidden_dim)
 
         return hidden

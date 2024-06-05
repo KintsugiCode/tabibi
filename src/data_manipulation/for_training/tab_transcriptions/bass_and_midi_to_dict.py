@@ -5,8 +5,8 @@ from src.__helpers__.__utils__ import (
     convert_to_recarray,
     savez_numpy_data,
 )
-from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
-    Normalizer,
+from src.data_manipulation.__helpers__.normalization.decibel_normalizer import (
+    DecibelNormalizer,
 )
 from src.data_manipulation.__helpers__.truncator.mix_bass_data_truncator import (
     data_truncator,
@@ -95,8 +95,8 @@ def bass_and_midi_to_dict(base_path, files_to_transform, save_file_path, pause=F
         t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
 
         # Normalize the data
-        norm_x = Normalizer(t_dict["x"])
-        t_dict["x"], t_dict["min_max_amplitudes"] = (
+        norm_x = DecibelNormalizer(t_dict["x"])
+        t_dict["x"], t_dict["x_min_max_amplitudes"] = (
             norm_x.normalize(),
             norm_x.get_min_max(),
         )

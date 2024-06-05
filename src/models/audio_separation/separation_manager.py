@@ -16,6 +16,7 @@ from src.data_manipulation.__helpers__.truncator.mix_bass_data_truncator import 
     data_truncator,
 )
 from src.models.audio_separation.gru.gru_separation import GRU_Separation
+from src.models.audio_separation.rnn.rnn import RNN
 from src.models.test import test
 from src.models.train import train
 from src.transformers.freq_time_analysis_to_audio import freq_time_analysis_to_audio
@@ -30,8 +31,28 @@ with open(hyperparameters_path) as hyperparameters_file:
 
 
 def separation_manager():
-    # Transform training/testing data for audio separation
-    transform_data(flag="audio separation")
+    while True:
+        choice = (
+            input(
+                "@@@@@@ Would you like to pre-process the data [1] or use the existing pre-processed data [2]?:"
+            )
+            .strip()
+            .lower()
+        )
+
+        if choice in ["1"]:
+            # Transform training/testing data for audio separation
+            print()
+            print("@@@@@@ DATA PRE-PROCESSING START @@@@@@")
+            transform_data(flag="audio separation")
+
+            break
+
+        elif choice in ["2"]:
+            break
+
+        else:
+            print("Please enter a valid input. Either [1] or [2].")
 
     # Load the training dataset
     print("@@@@ Loading the training dataset @@@@")
@@ -76,7 +97,7 @@ def separation_manager():
     y_test = y_test.float()
 
     # Initialize the model
-    model = GRU_Separation(
+    model = RNN(
         input_size=x_train.shape[2],
         hidden_dim=hyperparameters["hidden_dim"],
         n_layers=hyperparameters["n_layers"],
@@ -100,13 +121,13 @@ def separation_manager():
     torch.save(model.state_dict(), TRAINED_MODEL1_SAVE_PATH)
 
     # Test the model
-    y_pred = test(x_test, y_test, model, criterion)
+    y_pred = test(x_test, y_test, model, criterion, data_test, tag="separation")
 
     # Convert first three tracks back to audio for review
     freq_time_analysis_to_audio(
         mel_spectrogram_array=y_pred[:3],
         output_file_path=PRED_AUDIO_FILE_PATH,
         mix_names=data_test["mix_name"],
-        min_max_amplitudes=data_test["min_max_amplitudes"],
+        min_max_amplitudes=data_test["y_min_max_amplitudes"],
         tag="SEPARATION-TESTING",
     )

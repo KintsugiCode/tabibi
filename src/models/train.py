@@ -1,7 +1,12 @@
 import json
 import os
+import torch.optim.lr_scheduler as lr_scheduler
+from torch.utils.tensorboard import SummaryWriter
+import torch.nn.utils.clip_grad
 from src.models.__helpers__.learning_rate_reducer import learning_rate_reducer
-from src.models.__helpers__.visualize_for_evaluation import visualize_for_evaluation
+from src.models.__helpers__.visualize_for_training_evaluation import (
+    visualize_for_training_evaluation,
+)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 hyperparameters_separation_path = os.path.join(
@@ -17,6 +22,9 @@ with open(hyperparameters_transcription_path) as hyperparameters_file:
 
 
 def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
+    # TensorBoard Logging
+    writer = SummaryWriter(log_dir=os.path.join(dir_path, "../logs/tensorboard_logs/"))
+
     if tag == "separation":
         hyperparameters = hyperparameters_separation
     elif tag == "transcription":
@@ -24,8 +32,14 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
     else:
         raise Exception("Incorrect tag")
 
-    # Track loss to break training loop if loss is no longer changing
+    # Create the lr scheduler
+    scheduler = lr_scheduler.ReduceLROnPlateau(
+        optimizer, "min", patience=5, factor=0.5, verbose=True
+    )
+
+    # Track loss to break training loop if loss is no longer changing or increasing
     no_change = 0
+    loss_increasing = False
     prev_loss = float("inf")
 
     # Track learning rate reduction
@@ -52,18 +66,31 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
 
         # Backward pass (backpropagation) where gradients are calculated
         loss.backward()
+
+        # Gradient clipping
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.5)
+
         # Update model parameters, based on the gradients calculated in the backward pass
         optimizer.step()
+
+        # TensorBoard Logging
+        writer.add_scalar("Loss/train", loss.item(), epoch)
+
+        # Log parameter and gradient histograms
+        for name, param in model.named_parameters():
+            writer.add_histogram(f"Params/{name}", param, epoch)
+            if param.grad is not None:
+                writer.add_histogram(f"Grads/{name}", param.grad, epoch)
 
         # Print statistics
         print(f"@@ Epoch {epoch + 1} Done. loss: {loss.item():.7f} @@")
 
-        # Reduce learning rate if necessary
-        lr_reduced, optimizer = learning_rate_reducer(loss, optimizer, lr_reduced)
+        # Update the scheduler with the current loss
+        scheduler.step(loss.item())
 
         # Visualizations and audio-transforms for manual evaluation
         if epoch == hyperparameters["n_epochs"] - 1:
-            visualize_for_evaluation(
+            visualize_for_training_evaluation(
                 outputs,
                 x_train,
                 y_train,
@@ -78,19 +105,42 @@ def train(x_train, y_train, model, criterion, optimizer, data_train, tag):
         else:
             no_change = 0
 
+        # Check if the loss over the last 5 epochs has been larger than its previous loss
+        if loss.item() > prev_loss:
+            loss_increasing += 1
+        else:
+            loss_increasing = 0
+
         prev_loss = loss.item()
+
+        # If loss has started increasing, stop early
+        if loss_increasing >= 10:
+            print(
+                "@@@@@@ Stopping early - loss has increased too many times in a row. @@@@@@ "
+            )
+            visualize_for_training_evaluation(
+                outputs=outputs,
+                x=x_train,
+                y=y_train,
+                data=data_train,
+                tag=f"{tag}-TRAINING",
+                flag=True,
+            )
+            break
 
         # If loss hasn't changed for 30 epochs, stop early
         if no_change >= 30:
             print("@@@@@@ Stopping early - loss hasn't changed in 30 epochs. @@@@@@ ")
-            visualize_for_evaluation(
+            visualize_for_training_evaluation(
                 outputs,
                 x_train,
                 y_train,
                 data_train,
                 tag=f"{tag}-TRAINING",
-                flag=False,
+                flag=True,
             )
             break
+
+    writer.close()
 
     return model

@@ -6,8 +6,8 @@ from src.__helpers__.__utils__ import (
     savez_numpy_data,
     convert_to_recarray,
 )
-from src.data_manipulation.__helpers__.normalization.mix_bass_data_normalizer import (
-    Normalizer,
+from src.data_manipulation.__helpers__.normalization.decibel_normalizer import (
+    DecibelNormalizer,
 )
 from src.data_manipulation.__helpers__.truncator.mix_bass_data_truncator import (
     data_truncator,
@@ -111,16 +111,12 @@ def mixed_signal_to_dict(base_path, files_to_transform, save_file_path, pause=Fa
         t_dict = convert_t_dict_key_to_numpy_arrays(dictionary=t_dict, keys=["x", "y"])
 
         # Normalize the data
-        norm_x = Normalizer(t_dict["x"])
-        t_dict["x"], t_dict["min_max_amplitudes"] = (
-            norm_x.normalize(),
-            norm_x.get_min_max(),
-        )
-        norm_y = Normalizer(t_dict["y"])
-        t_dict["y"], t_dict["min_max_amplitudes"] = (
-            norm_y.normalize(),
-            norm_y.get_min_max(),
-        )
+        norm_x = DecibelNormalizer(t_dict["x"])
+        t_dict["x"] = norm_x.normalize()
+        t_dict["x_min_max_amplitudes"] = norm_x.get_min_max()
+        norm_y = DecibelNormalizer(t_dict["y"])
+        t_dict["y"] = norm_y.normalize()
+        t_dict["y_min_max_amplitudes"] = norm_y.get_min_max()
 
         # Transform to recarray
         t_dict_recarray = convert_to_recarray(data_dict=t_dict)
